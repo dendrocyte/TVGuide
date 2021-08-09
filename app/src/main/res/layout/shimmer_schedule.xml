@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:tools="http://schemas.android.com/tools"
+        app:shimmer_duration="800"
+        app:shimmer_dropoff="30"
+        app:shimmer_base_alpha="0.5"
+        android:layout_marginBottom="10dp"
+        app:shimmer_shape="radial">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/tVChannel"
+                android:layout_marginTop="13dp"
+                tools:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18"
+                android:gravity="center_vertical|start"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:clickable="true"
+                android:focusable="true"/>
+        <!-- FIXME 待補上  android:background="@color/shimmer_bg"     -->
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/recyclerProgram"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="@id/tVChannel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tVChannel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+        <!-- FIXME 待補上  android:background="@color/shimmer_bg"     -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.facebook.shimmer.ShimmerFrameLayout>

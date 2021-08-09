@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <!-- 注意只有第一個要將前面消除   -->
+    <View
+            android:layout_width="wrap_content"
+            android:layout_height="3dp"
+            android:id="@+id/timeline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/design_default_color_error"
+        />
+    <!--FIXME 待補上 android:background="@color/color_timeline"  -->
+    <!-- 故意間隔margin start = 7dp-->
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/iVpin"
+            android:layout_marginStart="7dp"
+            app:layout_constraintBottom_toBottomOf="@id/timeline"
+            app:layout_constraintTop_toTopOf="@id/timeline"
+            app:layout_constraintStart_toStartOf="parent"
+
+        />
+    <!--FIXME 待補上 android:src="@mipmap/ic_pin"  -->
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tVtick"
+            android:layout_marginTop="23dp"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/iVpin"
+            app:layout_constraintStart_toStartOf="@+id/iVpin"
+            app:layout_constraintTop_toBottomOf="@+id/timeline"
+            tools:text="08:00"
+            />
+</androidx.constraintlayout.widget.ConstraintLayout>
