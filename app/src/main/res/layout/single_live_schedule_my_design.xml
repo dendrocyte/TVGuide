@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/recyclerProgram"
             android:layout_marginTop="@dimen/dp_20"
+            android:nestedScrollingEnabled="true"
             app:layout_constraintStart_toStartOf="@id/tVChannel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tVChannel"
