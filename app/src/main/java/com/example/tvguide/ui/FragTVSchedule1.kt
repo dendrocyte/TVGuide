@@ -118,9 +118,13 @@ class FragTVSchedule1 : Fragment(){
                 it.xEnd = resources.displayMetrics.widthPixels.toFloat()-measuredWidth
                 setOnTouchListener(it.touchListener)
                 //Feature:顯示目前line marker時間
-                binding.tVIndicator.text = calIndicatorTiming(overallScroll, it.newdX)
+                binding.tVIndicator.text =
+                    calIndicatorTiming(binding.recyclerTimeline.overallScroll, it.newdX)
                 //Feature: line marker 移動，indicator 指標時間跟著移動
-                it.newXListener = { d -> binding.tVIndicator.text = calIndicatorTiming(overallScroll, d) }
+                it.newXListener = { d ->
+                    binding.tVIndicator.text =
+                        calIndicatorTiming(binding.recyclerTimeline.overallScroll, d)
+                }
             }
 
         }
@@ -141,34 +145,36 @@ class FragTVSchedule1 : Fragment(){
     }
 
 
-    /*scroll總量推算時間*/
-    private var overallScroll = 0f
-    /*為了能schedule移動同步，須記錄在這段移動期間移動的量*/
-    private var shiftX = 0
     private val timeLineScrollListener = object : Timeline.ScrollListener{
         //schedule 移動, timeline移動 ->推算移動總量
         //User捲動timeline -> 推算移動總量
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            overallScroll += dx
-            shiftX += dx
-            println("timeline: scroll $overallScroll")
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            with(rv as Timeline){
+                overallScroll += dx
+                shiftX += dx
+                println("timeline: scroll $overallScroll")
+            }
         }
         //Feature: timeline 移動，indicator的時間也會改變
-        override fun onActiveScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        override fun onActiveScrollStateChanged(rv: RecyclerView, newState: Int) {
             //1H = 螢幕 * 0.66
             if (newState == RecyclerView.SCROLL_STATE_IDLE){
-                /*主動scroll 要通知schedule recyclerview*/
-                println("timeline Scroll stop")
-                binding.tVIndicator.text = calIndicatorTiming(overallScroll, agent.newdX)
-                passiveScrollSubject.onNext(binding.recyclerTimeline.id to shiftX)
-                shiftX = 0 //歸零
+                with(rv as Timeline){
+                    /*主動scroll 要通知schedule recyclerview*/
+                    kotlin.io.println("timeline Scroll stop")
+                    binding.tVIndicator.text = calIndicatorTiming(overallScroll, agent.newdX)
+                    passiveScrollSubject.onNext(binding.recyclerTimeline.id to shiftX)
+                    shiftX = 0 //歸零
+                }
             }
         }
         //Feature: schedule 移動,.., indicator的時間改變
-        override fun onPassiveScrollState(recyclerView: RecyclerView, state: Int) {
-            println("timeline Scroll stop")
-            shiftX = 0 //歸零
-            binding.tVIndicator.text = calIndicatorTiming(overallScroll, agent.newdX)
+        override fun onPassiveScrollState(rv: RecyclerView, state: Int) {
+            with(rv as Timeline){
+                kotlin.io.println("timeline Scroll stop")
+                shiftX = 0 //歸零
+                binding.tVIndicator.text = calIndicatorTiming(overallScroll, agent.newdX)
+            }
         }
     }
 

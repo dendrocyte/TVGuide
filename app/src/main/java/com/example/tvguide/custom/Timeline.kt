@@ -20,6 +20,11 @@ class Timeline @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
     private var listener : ScrollListener? = null
+    /*scroll總量推算時間*/
+    var overallScroll = 0f
+    /*為了能schedule移動同步，須記錄在這段移動期間移動的量*/
+    var shiftX = 0
+
 
     /**
      * do nothing
