@@ -1,10 +1,7 @@
 package usecase
 
-import com.example.tvguide.*
 import com.example.tvguide.model.TVListBySchedule
-import com.example.tvguide.model.TVScheduleModel
-import com.example.tvguide.model.TickGroupModel
-import io.reactivex.rxjava3.annotations.NonNull
+import com.example.tvguide.ITVScheduleUsecase
 import io.reactivex.rxjava3.core.Single
 import repo.IRxTVRepository
 import kotlin.collections.HashMap

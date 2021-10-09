@@ -1,6 +1,7 @@
 package repo
 
-import RxTVAPICall
+import TVLocalAPICall
+import TVRemoteAPICall
 import com.example.tvguide.mapping.ModelMap
 import com.example.tvguide.model.TVScheduleModel
 import com.example.tvguide.model.TVUIModel
@@ -16,7 +17,7 @@ import io.reactivex.rxjava3.core.Single
  * @params
  * @params
  */
-class RxTVRepository(private val call : RxTVAPICall) : IRxTVRepository {
+class RxTVRepository(private val call : TVRemoteAPICall) : IRxTVRepository {
 
     override fun fetchTVListBySchedule(): Single<Map<String, List<TVScheduleModel>>> {
         return call.getTVScheduleList()
@@ -29,12 +30,12 @@ class RxTVRepository(private val call : RxTVAPICall) : IRxTVRepository {
                 hashMap
             }
     }
-
+    //TESTME: remote data
     override fun fetchTVListByChannel(chanName: String): Single<List<TVUIModel>> {
         return call.getTVListByChannelName(chanName)
             .map{ resp -> resp.map {ModelMap.toTVUIModel(it) } }
     }
-
+    //TESTME: remote data
     override fun fetchProgramDetailById(chanName: String, id: String): Single<TVUIModel> {
         return call.getProgramById(chanName, id)
             .map { ModelMap.toTVUIModel(it) }

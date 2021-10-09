@@ -10,13 +10,14 @@ import retrofit2.http.Query
  *
  * TODO:
  * Description:
- *
+ * /*for mock data use; if remote data is not built ready*/
  * @params
  * @params
  */
-interface RxTVAPICall {
+interface TVLocalAPICall {
     companion object{
-        const val DEV_BASE_URL= "https://my-json-server.typicode.com/dendrocyte/mock-restful/"
+        //TODO: every time to build, have to command adb reverse tcp:3000 tcp:3000
+        const val LOCAL_BASE_URL = "http://localhost:3000/"
     }
 
     @GET("schedule")

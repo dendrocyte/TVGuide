@@ -1,7 +1,6 @@
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
@@ -10,7 +9,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 /**
@@ -44,9 +42,10 @@ var remoteModule = module {
             .create()
     }
     //api
-    single<RxTVAPICall>{
+    //if db.json is > 10k, show error
+    single<TVRemoteAPICall>{
         Retrofit.Builder()
-            .baseUrl(RxTVAPICall.DEV_BASE_URL)//設置baseUrl即要連的網站
+            .baseUrl(TVRemoteAPICall.DEV_BASE_URL)//設置baseUrl即要連的網站
             .addConverterFactory(
                 GsonConverterFactory.create(//用Gson作為資料處理Converter
                 get<Gson>(named("time"))
@@ -54,7 +53,19 @@ var remoteModule = module {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create()) //Rx-call converter
             .client(get<OkHttpClient>(named("noAuth")))
             .build()
-            .create(RxTVAPICall::class.java)
+            .create(TVRemoteAPICall::class.java)
     }
-
+    //local json-server
+    single<TVLocalAPICall>{
+        Retrofit.Builder()
+            .baseUrl(TVLocalAPICall.LOCAL_BASE_URL)//設置baseUrl即要連的網站
+            .addConverterFactory(
+                GsonConverterFactory.create(//用Gson作為資料處理Converter
+                    get<Gson>(named("time"))
+                ))
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create()) //Rx-call converter
+            .client(get<OkHttpClient>(named("noAuth")))
+            .build()
+            .create(TVLocalAPICall::class.java)
+    }
 }
