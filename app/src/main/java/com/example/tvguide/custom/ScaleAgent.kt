@@ -17,7 +17,7 @@ object ScaleAgent {
      * NOTE 要改UI版規格 要設定ratioOf1HPerScreen
      * 設定死規格
      */
-    const val ratioOfUIMyDesign = 0.29f
+    const val ratioOfUIMyDesign = 0.34f
     private var ratioOf1HPerScreen : Float = ratioOfUIMyDesign
 
     /**

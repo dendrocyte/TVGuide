@@ -8,13 +8,13 @@
 
 
     <!-- dot 19dp min   -->
-    <!-- 故意間隔margin start = 1dp-->
+    <!-- 故意間隔margin start = 13dp (10 min)-->
     <ImageView
-        android:layout_width="26dp"
-        android:layout_height="26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/iVpin"
         android:src="@drawable/dot_end_2"
-        android:layout_marginStart="1dp"
+        android:layout_marginStart="13dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
