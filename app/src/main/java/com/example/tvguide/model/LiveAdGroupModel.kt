@@ -17,16 +17,14 @@ import kotlinx.android.parcel.Parcelize
  * @params
  * @params
  */
-/*By Schedule*/
-data class TVListBySchedule(
-    val data : List<TVScheduleModel>,
-    val channelName: String
-) {
 
-    override fun toString(): String {
-        return GsonBuilder().setPrettyPrinting().create().toJson(this)
-    }
-}
+/*By Schedule*/
+/**
+ *
+ * @format Map<String, List<TVScheduleModel>>
+ * @param String channelName
+ * @param List<TVScheduleModel> Programs
+ * */
 
 
 data class TVScheduleModel(

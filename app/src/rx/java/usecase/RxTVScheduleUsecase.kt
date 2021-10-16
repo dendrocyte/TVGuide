@@ -1,8 +1,8 @@
 package usecase
 
-import com.example.tvguide.model.TVListBySchedule
 import com.example.tvguide.ITVScheduleUsecase
 import com.example.tvguide.custom.TickDesign
+import com.example.tvguide.model.TVScheduleModel
 import io.reactivex.rxjava3.core.Single
 import repo.IRxTVRepository
 import kotlin.collections.HashMap
@@ -11,19 +11,19 @@ import kotlin.collections.HashMap
  * Created by luyiling on 2020/9/18
  * Modified by
  *
- * TODO:
+ * TODO: 若未來Programs 想要分不同ＵＩ Design, 應該重新組UI Model
  * Description:
- *
  * @params
  * @params
  */
 class RxTVScheduleUsecase(private val repo: IRxTVRepository)
-    : ITVScheduleUsecase<Single<List<TVListBySchedule>>>(TickDesign.DEBOUNCE) {
+    : ITVScheduleUsecase<Single<Map<String, List<TVScheduleModel>>>>(TickDesign.DEBOUNCE) {
 
+    //NOTE: 是否要整合在公司寫的版本
     //FIXME: 考慮納入db 否則如何做filter
     //FIXME: 之後要考慮有channel name 但完全沒有該channel的資料
     //FIXME：因為資料不完整，apk 先呈現no schedule page
-    override fun getSchedule() : Single<List<TVListBySchedule>> =
+    override fun requestSchedule() : Single<Map<String, List<TVScheduleModel>>> =
         //轉資料 Map<String, List<TVScheduleModel>>, key=channelName
         repo.fetchTVListBySchedule()
             .map { _map -> //sort ascending
@@ -45,12 +45,6 @@ class RxTVScheduleUsecase(private val repo: IRxTVRepository)
                 //TODO:考慮是否由insert 進入db 時就先處理
 
                 fillGap(HashMap(mutableMap))
-
-                mutableMap
             }
-            .map {//轉資料 HashMap<String, List<LiveScheduleModel>> -> List<LiveListBySchedule>
-                it.map { TVListBySchedule(it.value, it.key) }
-            }
-
 
 }

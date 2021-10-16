@@ -2,10 +2,10 @@ package vm
 
 import com.example.tvguide.model.LiveDataResult
 import com.example.tvguide.ITVScheduleViewModel
-import usecase.RxTVScheduleUsecase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import usecase.RxTVScheduleUsecase
 
 /**
  * Created by luyiling on 2020/9/21
@@ -30,7 +30,7 @@ class RxTVScheduleViewModel(
     override fun loadTVSchedule(onFinished: () -> Unit){
         disposable = CompositeDisposable()
         disposable.add(
-            (usecase as RxTVScheduleUsecase).getSchedule()
+            (usecase as RxTVScheduleUsecase).requestSchedule()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate { onFinished() }

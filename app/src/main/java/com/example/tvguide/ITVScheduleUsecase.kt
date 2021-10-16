@@ -13,8 +13,6 @@ import kotlin.collections.HashMap
  * TODO:
  * Description: 由rx/, coroutine/ 實作
  *
- * @params
- * @params
  */
 abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
 
@@ -39,9 +37,7 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
         )
     }
 
-
-    abstract fun getSchedule() : T
-
+    abstract fun requestSchedule() : T
 
 
     //************************ Gap 計算 ****************************//

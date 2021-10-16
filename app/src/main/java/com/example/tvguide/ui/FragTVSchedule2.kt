@@ -20,7 +20,7 @@ import com.example.tvguide.custom.Timeline
 import com.example.tvguide.databinding.FragLiveScheduleMyDesignBinding
 import com.example.tvguide.logd
 import com.example.tvguide.model.Status
-import com.example.tvguide.model.TVListBySchedule
+import com.example.tvguide.model.TVScheduleModel
 import com.example.tvguide.vm.LiveShareViewModel
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -30,7 +30,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 /**
  * Created by luyiling on 2021/10/9
  * Modified by
- *
+ * NOTE **Design 2**
  * TODO: 測試NextScrollView & HorizontalScrollView 對 Scan Vertical & Horizontal 的偵測 (which listener)
  * Description: With My Design UI/UX
  *
@@ -96,7 +96,7 @@ class FragTVSchedule2 : Fragment(){
             logd("recv: $it")
             when(it.status){
                 Status.SUCCESS->
-                    if (it.data?.isNotEmpty() == true) feedData(it.data.toMutableList())
+                    if (it.data?.isNotEmpty() == true) feedData(it.data)
                     else feedEmptyErrData(isErr = false)
 
                 Status.ERROR-> feedEmptyErrData(isErr = true)
@@ -143,19 +143,19 @@ class FragTVSchedule2 : Fragment(){
     /////////////////////////// feed data ///////////////////////////////////////////
 
 
-    fun feedData(data : MutableList<TVListBySchedule>) {
+    fun feedData(data : Map<String, List<TVScheduleModel>>) {
         //FIXME modify scrollView margin?
 
         //若xml裡view名稱有底線，會去除以Java的格式命名
         binding.containerSchedule.removeAllViews()
-        data.forEachIndexed { index, info ->
+        data.forEach { info ->
             //FIXME: add RV??
             //add live_schedule
             val view =
                 layoutInflater.inflate(R.layout.single_live_schedule_my_design, binding.containerSchedule, false)
 
             with(view.findViewById<TextView>(R.id.tVChannel)) {
-                text = info.channelName
+                text = info.key
                 setOnClickListener {
                     logd("Channel click: ${this.text}")
                     shareViewModel.naviChannel.onNext(this.text.toString())
@@ -167,7 +167,7 @@ class FragTVSchedule2 : Fragment(){
                 val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 setHasFixedSize(true)
                 layoutManager = manager
-                adapter = ProgramAdapter(info.data).apply {
+                adapter = ProgramAdapter(info.value).apply {
                     setOnItemChildClickListener { adapter, view, position ->
                         logd("$view:Thumbnail click---$position")
                         //FIXME
@@ -183,7 +183,7 @@ class FragTVSchedule2 : Fragment(){
                 //FIXME: addItemDecoration(MarginDecoation((20 * resources.displayMetrics.density).toInt())) //校正對期線
 
                 //因為每一個的schedule recyclerview的id都一樣，要用tag 做區分
-                tag = index
+                tag = info.key.hashCode()
 
                 //FIXME: 移動到父類去處理
                 //因為embedded recyclerview

@@ -19,10 +19,10 @@ import com.example.tvguide.custom.Schedule
 import com.example.tvguide.custom.Timeline
 import com.example.tvguide.databinding.FragLiveScheduleBinding
 import com.example.tvguide.logd
-import com.example.tvguide.model.TVListBySchedule
 import com.example.tvguide.model.Status
 import com.example.tvguide.ITVScheduleViewModel
 import com.example.tvguide.custom.ScaleAgent
+import com.example.tvguide.model.TVScheduleModel
 import com.example.tvguide.vm.LiveShareViewModel
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -83,7 +83,7 @@ class FragTVSchedule1 : Fragment(){
             logd("recv: $it")
             when(it.status){
                 Status.SUCCESS->
-                    if (it.data?.isNotEmpty() == true) feedData(it.data.toMutableList())
+                    if (it.data?.isNotEmpty() == true) feedData(it.data)
                     else feedEmptyErrData(isErr = false)
 
                 Status.ERROR-> feedEmptyErrData(isErr = true)
@@ -216,18 +216,18 @@ class FragTVSchedule1 : Fragment(){
 
 
     /*+++++++++++++++++++ feed data ++++++++++++++++++++*/
-    fun feedData(data : MutableList<TVListBySchedule>) {
+    fun feedData(data : Map<String, List<TVScheduleModel>>) {
         //modify scrollView margin
         modifyScrollView(R.id.recyclerTimeline)
         //若xml裡view名稱有底線，會去除以Java的格式命名
         binding.containerSchedule.removeAllViews()
-        data.forEachIndexed { index, info ->
+        data.forEach { info ->
             //add live_schedule
             val view =
                 layoutInflater.inflate(R.layout.single_live_schedule, binding.containerSchedule, false)
 
             with(view.findViewById<TextView>(R.id.tVChannel)) {
-                text = info.channelName
+                text = info.key
                 setOnClickListener {
                     logd("Channel click: ${this.text}")
                     shareViewModel.naviChannel.onNext(this.text.toString())
@@ -239,7 +239,7 @@ class FragTVSchedule1 : Fragment(){
                 val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 setHasFixedSize(true)
                 layoutManager = manager
-                adapter = ProgramAdapter(info.data).apply {
+                adapter = ProgramAdapter(info.value).apply {
                     setOnItemChildClickListener { adapter, view, position ->
                         logd("$view:Thumbnail click---$position")
                         //FIXME
@@ -254,7 +254,7 @@ class FragTVSchedule1 : Fragment(){
                 addItemDecoration(MarginDecoation((20 * resources.displayMetrics.density).toInt())) //校正對期線
 
                 //因為每一個的schedule recyclerview的id都一樣，要用tag 做區分
-                tag = index
+                tag = info.key.hashCode()
 
                 //因為embedded recyclerview
                 // (如: 父recyclerview + 子recyclerview) (如：父 nestScrollView + 子recyclerview)

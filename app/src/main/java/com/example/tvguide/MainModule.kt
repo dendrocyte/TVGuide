@@ -2,6 +2,7 @@ package com.example.tvguide
 
 import com.example.tvguide.vm.LiveShareViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**

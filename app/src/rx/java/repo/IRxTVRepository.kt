@@ -19,7 +19,7 @@ interface IRxTVRepository {
     /*tv list by schedule*/
     fun fetchTVListBySchedule() : Single<Map<String, List<TVScheduleModel>>>
 
-    /*tv list by channel*/
+    /*tv list by single channel*/
     fun fetchTVListByChannel(chanName : String) : Single<List<TVUIModel>>
 
     /*program detail*/
