@@ -28,7 +28,7 @@ class ProgramAdapter(data : List<TVScheduleModel>)
 
     init {
         /*addChildClickViewIds 不能放在convert()*/
-        addChildClickViewIds(R.id.iVthumbnail)
+        addChildClickViewIds(R.id.iVmask)
     }
     override fun convert(helper: BaseViewHolder, item: TVScheduleModel) {
         //FIXME: 改長度

@@ -26,18 +26,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/recyclerTimeline"
-        android:layout_marginStart="@dimen/dp_15"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iVbigMouth"
         app:layout_constraintTop_toTopOf="@+id/iVbigMouth"
-        app:layout_constraintBottom_toBottomOf="@+id/iVbigMouth"
         android:descendantFocusability="blocksDescendants"
         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:id="@+id/iVChannel"
+        android:id="@+id/recyclerChannel"
         android:layout_marginTop="@dimen/dp_22"
         app:layout_constraintStart_toStartOf="@+id/iVbigMouth"
         app:layout_constraintEnd_toEndOf="@+id/iVbigMouth"
@@ -54,7 +52,7 @@
         android:id="@+id/horizontalScroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iVChannel"
+        app:layout_constraintTop_toTopOf="@id/recyclerChannel"
         app:layout_constraintStart_toStartOf="@id/recyclerTimeline">
 
         <!-- TESTME: 有機會解鎖橫向捲動嗎   -->
@@ -75,10 +73,6 @@
 
         </androidx.core.widget.NestedScrollView>
     </HorizontalScrollView>
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

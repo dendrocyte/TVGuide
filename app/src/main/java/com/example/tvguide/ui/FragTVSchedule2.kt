@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tvguide.ITVScheduleViewModel
 import com.example.tvguide.R
+import com.example.tvguide.adapter.ChannelAdapter
 import com.example.tvguide.adapter.ProgramAdapter
 import com.example.tvguide.adapter.TimelineAdapter
 import com.example.tvguide.custom.Schedule
@@ -30,7 +31,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * Created by luyiling on 2021/10/9
  * Modified by
  *
- * TODO:
+ * TODO: 測試NextScrollView & HorizontalScrollView 對 Scan Vertical & Horizontal 的偵測 (which listener)
  * Description: With My Design UI/UX
  *
  * @params
@@ -55,7 +56,7 @@ class FragTVSchedule2 : Fragment(){
     private val shareViewModel : LiveShareViewModel by sharedStateViewModel()
     private val viewModel : ITVScheduleViewModel by viewModel()
     private val timelineAdapter by lazy { TimelineAdapter(viewModel.timeline) }
-
+    private val channelAdapter by lazy { ChannelAdapter(listOf())} //FIXME
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,6 +85,12 @@ class FragTVSchedule2 : Fragment(){
 //            viewTreeObserver.addOnScrollChangedListener { }
         }
 
+        with(binding.recyclerChannel){
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter //FIXME: loading adapter
+            //FIXME: scroll vertical, sync with program vertical
+        }
 
         viewModel.TVSchedule.observe(viewLifecycleOwner){
             logd("recv: $it")
