@@ -3,13 +3,9 @@ package com.example.tvguide
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.tvguide.ITVScheduleUsecase
-import com.example.tvguide.logd
 import com.example.tvguide.model.LiveDataResult
 import com.example.tvguide.model.TVListBySchedule
 import com.example.tvguide.model.SingleLiveEvent
-import usecase.RxTVScheduleUsecase
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 /**
  * Created by luyiling on 2020/9/21

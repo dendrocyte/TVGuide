@@ -1,6 +1,7 @@
 package com.example.tvguide
 
 import com.example.tvguide.*
+import com.example.tvguide.custom.TickDesign
 import com.example.tvguide.model.TVScheduleModel
 import com.example.tvguide.model.TickGroupModel
 import kotlin.collections.HashMap
@@ -15,16 +16,26 @@ import kotlin.collections.HashMap
  * @params
  * @params
  */
-abstract class ITVScheduleUsecase <out T> {
+abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
 
     //FIXME: 是否會從server?
     val filterMenuList = listOf("News", "Sports", "All")
 
-    /*live schedule*/
+
+    /** live schedule
+     * NOTE change the timeline UI type here
+     */
     val timeline = (0..24).mapIndexed { index, i ->
         TickGroupModel(
             String.format("%02d:00", i),
-            if (index == 0 ) TickGroupModel.START1 else TickGroupModel.START2
+            when(timelineDesignFlag){
+                TickDesign.BOSS
+                -> if (index == 0 ) TickGroupModel.START else TickGroupModel.OTHER
+                TickDesign.DEBOUNCE
+                -> if (index % 2 == 0) TickGroupModel.START1 else TickGroupModel.START2
+                TickDesign.DEFAULT
+                -> TickGroupModel.START1
+            }
         )
     }
 

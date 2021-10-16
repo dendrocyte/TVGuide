@@ -54,7 +54,6 @@ class FragTVSchedule2 : Fragment(){
 
     private val shareViewModel : LiveShareViewModel by sharedStateViewModel()
     private val viewModel : ITVScheduleViewModel by viewModel()
-    //FIXME: 要使用不同的timelineAdapter, 因為有不同的xml
     private val timelineAdapter by lazy { TimelineAdapter(viewModel.timeline) }
 
 

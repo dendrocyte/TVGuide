@@ -2,6 +2,7 @@ package usecase
 
 import com.example.tvguide.model.TVListBySchedule
 import com.example.tvguide.ITVScheduleUsecase
+import com.example.tvguide.custom.TickDesign
 import io.reactivex.rxjava3.core.Single
 import repo.IRxTVRepository
 import kotlin.collections.HashMap
@@ -17,8 +18,7 @@ import kotlin.collections.HashMap
  * @params
  */
 class RxTVScheduleUsecase(private val repo: IRxTVRepository)
-    : ITVScheduleUsecase<Single<List<TVListBySchedule>>>() {
-
+    : ITVScheduleUsecase<Single<List<TVListBySchedule>>>(TickDesign.DEBOUNCE) {
 
     //FIXME: 考慮納入db 否則如何做filter
     //FIXME: 之後要考慮有channel name 但完全沒有該channel的資料

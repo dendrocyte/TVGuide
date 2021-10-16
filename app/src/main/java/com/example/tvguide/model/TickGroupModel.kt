@@ -19,9 +19,9 @@ data class TickGroupModel(val time : String, override val itemType : Int) : Mult
          * the first one is START
          * the rest is OTHER
          *
-         //const val START = 0
-         //const val OTHER = 1
          */
+        const val START = 0
+        const val OTHER = 1
 
 
         /** Design 2
