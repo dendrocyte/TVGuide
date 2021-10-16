@@ -1,11 +1,8 @@
 package com.example.tvguide
 
 import com.example.tvguide.*
-import com.example.tvguide.model.TVListBySchedule
 import com.example.tvguide.model.TVScheduleModel
 import com.example.tvguide.model.TickGroupModel
-import io.reactivex.rxjava3.core.Single
-import repo.IRxTVRepository
 import kotlin.collections.HashMap
 
 /**
@@ -27,7 +24,7 @@ abstract class ITVScheduleUsecase <out T> {
     val timeline = (0..24).mapIndexed { index, i ->
         TickGroupModel(
             String.format("%02d:00", i),
-            if (index == 0 ) TickGroupModel.START else TickGroupModel.OTHER
+            if (index == 0 ) TickGroupModel.START1 else TickGroupModel.START2
         )
     }
 

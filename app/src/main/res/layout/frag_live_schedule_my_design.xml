@@ -6,18 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/root"
-    android:background="@color/black"
+    android:background="@drawable/bg_1"
     android:focusable="false"
     android:clickable="false">
-<!--FIXME: dashboard-> a drawable-->
 
-<!--FIXME 待捕上    android:background="@color/dashboard_bg"-->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginStart="15dp"
-        tools:src="@drawable/brvah_sample_footer_loading"
+        android:src="@drawable/big_mouth"
         android:id="@+id/iVbigMouth"
         tools:tint="@color/white"
         app:layout_constraintTop_toTopOf="parent"
