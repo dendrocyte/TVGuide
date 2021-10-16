@@ -14,8 +14,22 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 data class TickGroupModel(val time : String, override val itemType : Int) : MultiItemEntity {
 
     companion object{
-        const val START = 0
-        const val OTHER = 1
+
+        /** Design 1
+         * the first one is START
+         * the rest is OTHER
+         *
+         //const val START = 0
+         //const val OTHER = 1
+         */
+
+
+        /** Design 2
+         * the odd is START1
+         * the even is START2
+         */
+        const val START1 = -2
+        const val START2 = -3
     }
 }
 

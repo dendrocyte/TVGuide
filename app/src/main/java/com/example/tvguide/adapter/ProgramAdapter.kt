@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.example.tvguide.R
+import com.example.tvguide.custom.ScaleAgent
 import com.example.tvguide.logd
 import com.example.tvguide.model.TVScheduleModel
 
@@ -35,7 +36,7 @@ class ProgramAdapter(data : List<TVScheduleModel>)
         val hDuration = (item.scheduleEnd-item.scheduleStart).toFloat()/(60*60*1000)
         logd("duration: $hDuration")
         val param = helper.itemView.layoutParams as ViewGroup.LayoutParams
-        param.width = (context.resources.displayMetrics.widthPixels * 0.65 * hDuration).toInt()
+        param.width = (ScaleAgent.pxOf1HWidth * hDuration).toInt()
         logd("width: ${param.width}")
 
         helper.getView<TextView>(R.id.tVmsg).visibility =

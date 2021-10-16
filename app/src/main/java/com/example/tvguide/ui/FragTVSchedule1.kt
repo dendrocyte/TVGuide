@@ -22,6 +22,7 @@ import com.example.tvguide.logd
 import com.example.tvguide.model.TVListBySchedule
 import com.example.tvguide.model.Status
 import com.example.tvguide.ITVScheduleViewModel
+import com.example.tvguide.custom.ScaleAgent
 import com.example.tvguide.vm.LiveShareViewModel
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -195,7 +196,7 @@ class FragTVSchedule1 : Fragment(){
     fun calIndicatorTiming(overallScroll: Float, dx : Float) : String{
         logd("overall: $overallScroll, $dx")
         //量定稿比例
-        val pxToH = 1f/(resources.displayMetrics.widthPixels*0.65)
+        val pxToH = 1f/ScaleAgent.pxOf1HWidth
 
         val shift = (overallScroll+dx)*pxToH
         //小數點前

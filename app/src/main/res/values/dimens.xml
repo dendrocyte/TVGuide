@@ -14,5 +14,6 @@
     <dimen name="dp_59">59dp</dimen>
     <dimen name="sp_24">24sp</dimen>
     <dimen name="dp_22">22dp</dimen>
+    <dimen name="sp_10">10sp</dimen>
 
 </resources>

@@ -115,7 +115,7 @@ class FragTVSchedule2 : Fragment(){
         }
         //Feature: timeline 移動，indicator的時間也會改變
         override fun onActiveScrollStateChanged(rv: RecyclerView, newState: Int) {
-            //1H = 螢幕 * 0.66
+            //1H = 螢幕 * 0.29
             if (newState == RecyclerView.SCROLL_STATE_IDLE){
                 with(rv as Timeline){
                     /*主動scroll 要通知schedule recyclerview*/
