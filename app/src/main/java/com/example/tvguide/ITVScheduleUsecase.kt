@@ -45,9 +45,9 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
     //限制gap的長度且多個gap段 才不會覺得太長都沒資料！
     protected fun fillGap(hashMap: HashMap<String, List<TVScheduleModel>>)
             : HashMap<String, List<TVScheduleModel>>{
-        for (k in hashMap.keys) {
+        loop@ for (k in hashMap.keys) {
             val list = mutableListOf<TVScheduleModel>()
-            hashMap[k]!!.forEachIndexed { index, liveScheduleModel ->
+            inner@ for ((index, liveScheduleModel) in hashMap[k]!!.withIndex()){
                 println("channelName: $k, index:$index, ${hashMap[k]!!.size}")
                 //++++++++++++++ 第一個資料 +++++++++++++++++//
                 if (index == 0) {
@@ -63,18 +63,21 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
                     when{
                         //資料過期
                         liveScheduleModel.scheduleEnd < currentDateStart -> {
+                            println("資料都過期了唷")
                             //創建 gap (1H 為單位)
                             list.addAll(create1HEmptyGaps(currentDateStart, currentDateEnd, liveScheduleModel.channelName))
                             //創建一整段的gap
                             //list.add(ob)
-                            return@forEachIndexed
+                            break@inner
                         }
                         //節目有跨過晚上12H
                         liveScheduleModel.scheduleStart < currentDateStart -> {
+                            println("資料超過午夜12H唷")
                             liveScheduleModel.scheduleStart = currentDateStart
                             list.add(liveScheduleModel)
                         }
                         else -> {
+                            println("正常資料")
                             //創建 gap (1H 為單位)
                             list.addAll(create1HEmptyGaps(
                                 currentDateStart,
