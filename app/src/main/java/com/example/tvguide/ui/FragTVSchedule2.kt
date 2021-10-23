@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.view.MarginLayoutParamsCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -154,7 +157,6 @@ class FragTVSchedule2 : Fragment(){
 
 
     fun feedData(data : Map<String, List<TVScheduleModel>>) {
-        //FIXME modify scrollView margin?
         //TEST pass: 資料是一對的
         with(binding.recyclerChannel) {
             adapter = channelAdapter
@@ -162,9 +164,14 @@ class FragTVSchedule2 : Fragment(){
         }
 
 
+
         //若xml裡view名稱有底線，會去除以Java的格式命名
         binding.containerSchedule.removeAllViews()
-        data.entries.forEachIndexed { index, info ->
+
+        //校正對齊線
+        binding.nestScrollView.correctStartLine()
+
+        data.entries.forEach { info ->
             //add live_schedule
             val view =
                 layoutInflater.inflate(R.layout.single_live_schedule_my_design, binding.containerSchedule, false)
@@ -185,9 +192,8 @@ class FragTVSchedule2 : Fragment(){
                     }
                 }
 
-                //FIXME: 校正對期限
-                //因single_tick_start 前距 margin start = 7dp + 13dp 第一點的半徑 = 20dp
-                //FIXME: addItemDecoration(MarginDecoation((20 * resources.displayMetrics.density).toInt())) //校正對期線
+
+
 
                 //因為每一個的schedule recyclerview的id都一樣，要用tag 做區分
                 tag = info.key.hashCode()
@@ -263,7 +269,17 @@ class FragTVSchedule2 : Fragment(){
     }
 
 
-
+    //右移對齊tick icon的中心
+    private fun View.correctStartLine(){
+        //偵測tick icon 得到要調整的間距 (icon 隨不同機體會用相對應的大小)
+        val tick = layoutInflater.inflate(R.layout.single_tick_start, null)
+        tick.findViewById<TextView>(R.id.tVtick).text = "00:00"
+        val pin = tick.findViewById<ImageView>(R.id.iVpin)
+        tick.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        println("TEST: ${(pin.layoutParams as ViewGroup.MarginLayoutParams).leftMargin} + ${(pin.measuredWidth /2f)}")
+        val margin = (pin.layoutParams as ViewGroup.MarginLayoutParams).leftMargin + (pin.measuredWidth /2f)
+        (this.layoutParams as ViewGroup.MarginLayoutParams).leftMargin = margin.toInt()
+    }
 
 
 

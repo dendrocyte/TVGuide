@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Program, Channel 固定高度80dp, 間距10dp   -->
+<!-- Program, Channel 固定高度50dp, 間距10dp   -->
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -12,7 +12,7 @@
 
     <com.example.tvguide.custom.Schedule
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="50dp"
             android:id="@+id/recyclerProgram"
             android:nestedScrollingEnabled="false"
             app:layout_constraintStart_toStartOf="parent"

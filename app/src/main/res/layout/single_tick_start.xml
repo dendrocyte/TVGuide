@@ -9,7 +9,7 @@
 
 
     <!-- dot 19dp min   -->
-    <!-- 故意間隔margin start = 1dp-->
+    <!-- 故意間隔margin start = 13dp (10 min)-->
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

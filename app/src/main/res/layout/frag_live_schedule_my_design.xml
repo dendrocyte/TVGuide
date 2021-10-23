@@ -26,9 +26,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/recyclerTimeline"
-        android:layout_marginStart="11dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/iVbigMouth"
+        app:layout_constraintStart_toEndOf="@id/recyclerChannel"
         app:layout_constraintTop_toTopOf="@+id/iVbigMouth"
         android:descendantFocusability="blocksDescendants"
         />

@@ -6,12 +6,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <!-- 固定高度80dp   -->
+    <!-- 固定高度50dp   -->
 
     <ImageView
         android:id="@+id/iVthumbnail"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="50dp"
         android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,13 +34,13 @@
     <TextView
         android:id="@+id/tVtitle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:textColor="@color/white"
         android:maxLines="2"
         android:textStyle="bold"
         android:textSize="@dimen/sp_10"
         android:gravity="center_vertical"
-        android:padding="@dimen/dp_12"
+        android:padding="8dp"
         android:ellipsize="end"
         android:lineSpacingExtra="4dp"
         app:layout_constraintBottom_toBottomOf="@id/iVthumbnail"
