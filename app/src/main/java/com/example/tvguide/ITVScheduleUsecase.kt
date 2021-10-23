@@ -143,7 +143,7 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
                             list.add(liveScheduleModel)
                         }
                         else ->{
-                            list.add(liveScheduleModel)
+                            //之前已經加過資料了
                             //創建 gap (1H 為單位)
                             list.addAll(create1HEmptyGaps(
                                 newEnd, currentDateEnd, liveScheduleModel.channelName
