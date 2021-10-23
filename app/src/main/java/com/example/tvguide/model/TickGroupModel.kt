@@ -30,6 +30,7 @@ data class TickGroupModel(val time : String, override val itemType : Int) : Mult
          */
         const val START1 = -2
         const val START2 = -3
+        const val END = -4
     }
 }
 

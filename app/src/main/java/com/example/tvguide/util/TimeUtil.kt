@@ -27,6 +27,12 @@ val todayStart : Long
         return today.toEpochMills
     }
 
+val today24HEnd : Long
+    get() {
+        //避免遇到一個月的最後一天
+        return todayStart+(24*60*60*1000)
+    }
+
 val today25HEnd : Long
     get() {
         //避免遇到一個月的最後一天

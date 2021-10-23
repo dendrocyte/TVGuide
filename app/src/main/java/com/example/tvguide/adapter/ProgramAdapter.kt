@@ -51,7 +51,8 @@ class ProgramAdapter(data : List<TVScheduleModel>)
 
         helper.getView<TextView>(R.id.tVtitle).text =
                 if (item.program == null) ""
-                else "${item.scheduleStart.toHHmm}-${item.scheduleEnd.toHHmm}\n${item.program?.title}"
+                else
+                    "${item.scheduleStart.toHHmm}-${item.scheduleEnd.toHHmm}\n${item.program?.title}"
     }
 
     /*複寫，以做到不同view type 做有無註冊listener的區分*/

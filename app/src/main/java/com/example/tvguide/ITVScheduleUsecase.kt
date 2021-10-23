@@ -30,7 +30,11 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
                 TickDesign.BOSS
                 -> if (index == 0 ) TickGroupModel.START else TickGroupModel.OTHER
                 TickDesign.DEBOUNCE
-                -> if (index % 2 == 0) TickGroupModel.START1 else TickGroupModel.START2
+                -> when{
+                    index == 24 -> TickGroupModel.END
+                    index % 2 == 0 -> TickGroupModel.START1
+                    else -> TickGroupModel.START2
+                }
                 TickDesign.DEFAULT
                 -> TickGroupModel.START1
             }
@@ -296,6 +300,6 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
     //***************** 每一次usecase 都要重啟計算一次 ******************//
     private val currentDateStart : Long = todayStart
 
-    private val currentDateEnd : Long = today25HEnd
+    private val currentDateEnd : Long = today24HEnd
 
 }
