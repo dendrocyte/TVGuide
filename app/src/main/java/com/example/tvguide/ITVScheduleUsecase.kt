@@ -163,6 +163,9 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
 
 
     protected fun create1HEmptyGaps(start: Long, end: Long, channelName : String) : List<TVScheduleModel>{
+        //特殊情境：start 和 end 相同 要排除
+        if (start == end) return emptyList()
+
         val h = 60 * 60 * 1000
         //start之後的下一個小時點
         val headH = ((start - currentDateStart) / h) + 1
@@ -172,7 +175,7 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
 
         val times = (endH - headH).toInt()
         val hasReminders = ((end - currentDateStart) % h) != (0).toLong()
-        logd("create 1H empty gaps : $start, $end, $headH, $endH, $times, $hasReminders")
+        logd("create 1H empty gaps : $start, $end, $headH, $endH, $times, $hasReminders, $channelName")
         var list = mutableListOf<TVScheduleModel>()
 
         //No content available frame
@@ -186,8 +189,11 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
             null
         )
 
-        //times <0 代表start跟end的間距不到 1H
-        //情況2: start-end 超過1H
+        ///////////////////////// 添加頭中部 /////////////////////////////////////
+
+        /**
+         * @情況2: start-end 超過規格時間（1H/3H）
+         */
         if (times > 0){
             //添加head
             val ob1 = ob.copy(
@@ -210,20 +216,74 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
                 //正式來時不要打印 非常耗內存
                 //loge("MIDDLE: final create gaps: $ob1")
             }
+            if (!hasReminders) return list
         }
 
-        //情況1: start-end 不到1H
-        //情況2: start-end 超過1H
-        //添加 end
-        if (hasReminders) {
+        /**
+         * @情況1: start-end 不到(1H/3H)
+         * @情況2: start-end 超過規格時間（1H/3H）＋start是整點
+         * @情況3: start-end 剛好1H/3H
+         *
+         * @用例 start非整, end 非整 [1H] [3H(含)內整點]
+         * @用例 start非整, end 整 [1H內] [3H內]
+         * @用例 start整, end 非整 [1H多] [3H多]
+         * @用例 start整, end 整   [1H整] [3H整]
+         */
+        if (times == 0){
+            //添加head
             val ob1 = ob.copy(
-                channelName = ob.channelName,
-                scheduleStart = currentDateStart + endH * h,
-                scheduleEnd = end
+                    channelName = ob.channelName,
+                    scheduleStart = start,
+                    scheduleEnd = currentDateStart + headH * h
             )
             list.add(ob1)
-            //正式來時不要打印 非常耗內存
-            //loge("END: final create gaps: $ob1")
+            loge("HEAD: final create gaps: $ob1")
+            if (!hasReminders) return list
+        }
+
+        /**
+         * 說明
+         * @情況1: start-end 不到(1H/3H)
+         *
+         * Scale_1H：
+         * @about times <0 代表start跟end的間距不到 (1H/3H) + start和end 的小時是相同的
+         * @用例 start非整, end 非整 [1H內]
+         * @用例 start整, end 非整   [1H內]
+         * 故Scale_1H只需要添加end 即可
+         *
+         * Scale_3H：
+         * @用例 start非整, end 非整                    [3H內]
+         * @用例 start非整, end 整 + start的時分 為3H倍數 [2H內]
+         * @用例 start整, end 非整                      [3H內]
+         * @用例 start整, end 整                        [3H內整點(不含3H整點)]
+         * 故Scale_3H 就需要做添加特殊end
+         */
+
+        ///////////////////////// 添加尾部 /////////////////////////////////////
+
+        /**
+         * 添加 end
+         * @about 只要end 非整即會至此
+         *
+         * @情況1: start-end 不到(1H/3H)
+         * @情況2: start-end 超過(1H/3H)
+         */
+        if (hasReminders) {
+            val ob1 =
+                    if (times < 0) ob.copy(
+                            channelName = ob.channelName,
+                            scheduleStart = start,
+                            scheduleEnd = end
+                    )
+                    else ob.copy(
+                            channelName = ob.channelName,
+                            scheduleStart = currentDateStart + endH * h,
+                            scheduleEnd = end
+                    )
+
+            list.add(ob1)
+            loge("END: final create gaps: $ob1")
+            return list
         }
         return list
     }

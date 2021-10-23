@@ -3,6 +3,7 @@ package com.example.tvguide
 import java.lang.Exception
 import java.time.*
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 /**
@@ -18,13 +19,12 @@ import java.util.*
 
 val todayStart : Long
     get() {
-        val today = Calendar.getInstance()
-        val year = today.get(Calendar.YEAR)
-        val month = today.get(Calendar.MONTH)
-        val day = today.get(Calendar.DATE)
-        today.set(year,month,day,0 ,0)
-        println("today start: ${today.timeInMillis}")
-        return today.timeInMillis
+        //truncatedTo 會將設定的單位（Day）後都清為0
+        //如：truncatedTo(Day) 將Day, Hour, Minute, Second, NanoSecond 都清為0
+        val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
+        println("${today.year}/${today.month}/${today.dayOfMonth}")
+        println("today start: ${today.toEpochMills}")
+        return today.toEpochMills
     }
 
 val today25HEnd : Long
