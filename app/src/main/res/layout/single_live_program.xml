@@ -42,6 +42,7 @@
         android:gravity="center_vertical"
         android:padding="@dimen/dp_12"
         android:ellipsize="end"
+        android:lineSpacingExtra="4dp"
         app:layout_constraintBottom_toBottomOf="@id/iVthumbnail"
         app:layout_constraintEnd_toEndOf="@id/iVthumbnail"
         app:layout_constraintStart_toStartOf="@id/iVthumbnail"

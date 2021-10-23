@@ -1,10 +1,8 @@
 package com.example.tvguide
 
 import java.lang.Exception
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 /**
@@ -22,7 +20,7 @@ val todayStart : Long
     get() {
         val today = Calendar.getInstance()
         val year = today.get(Calendar.YEAR)
-        val month = today.get(Calendar.MONTH)+1
+        val month = today.get(Calendar.MONTH)
         val day = today.get(Calendar.DATE)
         today.set(year,month,day,0 ,0)
         println("today start: ${today.timeInMillis}")
@@ -53,5 +51,13 @@ val Any.toEpochMills : Long
             is Long -> this
             is Date -> this.time
             is ZonedDateTime -> this.toEpochSecond() * 1000
-            else -> throw Exception("Noovo: Illegal time format")
+            else -> throw Exception("toEpochMills: Illegal time format")
         }
+
+val Any.toHHmm : String
+    get() = when(this){
+        //Mili-Second
+        is Long -> ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("HH:mm"))
+        else -> throw Exception("toHHmm: Illegal time format")
+    }

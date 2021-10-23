@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         tools:text="Label"
+        android:padding="5dp"
         android:textSize="@dimen/sp_10"
         android:maxLines="2"
         android:textStyle="bold"

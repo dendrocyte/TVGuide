@@ -11,6 +11,7 @@ import com.example.tvguide.R
 import com.example.tvguide.custom.ScaleAgent
 import com.example.tvguide.logd
 import com.example.tvguide.model.TVScheduleModel
+import com.example.tvguide.toHHmm
 
 /**
  * Created by luyiling on 2020/9/21
@@ -47,8 +48,10 @@ class ProgramAdapter(data : List<TVScheduleModel>)
                 .load(item.program?.thumbnail)
                 .into(this)
         }
-        helper.getView<TextView>(R.id.tVtitle).text = item.program?.title
 
+        helper.getView<TextView>(R.id.tVtitle).text =
+                if (item.program == null) ""
+                else "${item.scheduleStart.toHHmm}-${item.scheduleEnd.toHHmm}\n${item.program?.title}"
     }
 
     /*複寫，以做到不同view type 做有無註冊listener的區分*/
