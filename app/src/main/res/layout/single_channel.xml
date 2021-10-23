@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Program, Channel 固定高度80dp   -->
-<TextView
+<!-- Program, Channel 固定高度80dp, 間距10dp   -->
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    tools:text="Label"
-    android:textSize="@dimen/sp_10"
-    android:maxLines="2"
-    android:gravity="center"
-    android:textColor="@color/white"
-    android:background="@color/channel_bg"
-    android:id="@+id/tVChannel"/>
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        tools:text="Label"
+        android:textSize="@dimen/sp_10"
+        android:maxLines="2"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@color/channel_bg"
+        android:id="@+id/tVChannel"
+        />
+
+</RelativeLayout>
+
+

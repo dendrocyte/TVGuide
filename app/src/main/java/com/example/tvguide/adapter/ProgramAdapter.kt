@@ -31,7 +31,6 @@ class ProgramAdapter(data : List<TVScheduleModel>)
         addChildClickViewIds(R.id.iVmask)
     }
     override fun convert(helper: BaseViewHolder, item: TVScheduleModel) {
-        //FIXME: 改長度
         //EpisodeMilliSecond: 60*60*1000
         val hDuration = (item.scheduleEnd-item.scheduleStart).toFloat()/(60*60*1000)
         logd("duration: $hDuration")

@@ -15,7 +15,7 @@ import com.example.tvguide.R
  * @params
  * @params
  */
-class ChannelAdapter(list: List<String>)
+class ChannelAdapter(list: Set<String>)
     : BaseQuickAdapter<String, BaseViewHolder>(R.layout.single_channel, list.toMutableList()) {
 
     override fun convert(holder: BaseViewHolder, item: String) {

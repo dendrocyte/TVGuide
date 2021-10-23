@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tvguide.ITVScheduleViewModel
@@ -56,7 +57,20 @@ class FragTVSchedule2 : Fragment(){
     private val shareViewModel : LiveShareViewModel by sharedStateViewModel()
     private val viewModel : ITVScheduleViewModel by viewModel()
     private val timelineAdapter by lazy { TimelineAdapter(viewModel.timeline) }
-    private val channelAdapter by lazy { ChannelAdapter(listOf())} //FIXME
+    private val channelAdapter by lazy {
+        ChannelAdapter(setOf()).apply {
+            setOnItemChildClickListener { adapter, v, position ->
+                //TODO: navi channel
+            }
+            setDiffCallback(object : DiffUtil.ItemCallback<String>(){
+                override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+                   return oldItem == newItem
+                }
+                override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+                    return oldItem.hashCode() == newItem.hashCode()
+                }
+            })
+        }}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,8 +83,6 @@ class FragTVSchedule2 : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        feedLoadingView()
 
         with(binding.recyclerTimeline){
             setHasFixedSize(true)
@@ -88,8 +100,6 @@ class FragTVSchedule2 : Fragment(){
         with(binding.recyclerChannel){
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter //FIXME: loading adapter
-            //FIXME: scroll vertical, sync with program vertical
         }
 
         viewModel.TVSchedule.observe(viewLifecycleOwner){
@@ -145,28 +155,25 @@ class FragTVSchedule2 : Fragment(){
 
     fun feedData(data : Map<String, List<TVScheduleModel>>) {
         //FIXME modify scrollView margin?
+        //TEST pass: 資料是一對的
+        with(binding.recyclerChannel) {
+            adapter = channelAdapter
+            channelAdapter.setDiffNewData(data.keys.toMutableList())
+        }
+
 
         //若xml裡view名稱有底線，會去除以Java的格式命名
         binding.containerSchedule.removeAllViews()
-        data.forEach { info ->
-            //FIXME: add RV??
+        data.entries.forEachIndexed { index, info ->
             //add live_schedule
             val view =
                 layoutInflater.inflate(R.layout.single_live_schedule_my_design, binding.containerSchedule, false)
 
-            with(view.findViewById<TextView>(R.id.tVChannel)) {
-                text = info.key
-                setOnClickListener {
-                    logd("Channel click: ${this.text}")
-                    shareViewModel.naviChannel.onNext(this.text.toString())
-                }
-            }
-
+            //FIXME: scroll vertical, sync with program vertical
             with(view.findViewById<Schedule>(R.id.recyclerProgram)) {
                 logd("child schedule id: ${this.id}")
-                val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                setHasFixedSize(true)
-                layoutManager = manager
+                setHasFixedSize(false)
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = ProgramAdapter(info.value).apply {
                     setOnItemChildClickListener { adapter, view, position ->
                         logd("$view:Thumbnail click---$position")
@@ -185,13 +192,13 @@ class FragTVSchedule2 : Fragment(){
                 //因為每一個的schedule recyclerview的id都一樣，要用tag 做區分
                 tag = info.key.hashCode()
 
-                //FIXME: 移動到父類去處理
+                //FIXME: 移動到父類去處理(目前找不到)
                 //因為embedded recyclerview
                 // (如: 父recyclerview + 子recyclerview) (如：父 nestScrollView + 子recyclerview)
                 // 子recyclerview 都會沒收到ScrollListener, 需做客製化
-                /*offsetListener = object : Schedule.OffsetScrollListener{
+                offsetListener = object : Schedule.OffsetScrollListener{
                     override fun onScrolled(dx: Int, dy: Int, accOffsetX: Int, accOffsetY: Int) {
-                        *//*主動被動都會invoke*//*
+                        //主動被動都會invoke
                     }
                     override fun onScrollIDEState(rv: RecyclerView, shiftX: Int) {
                         passiveScrollSubject.onNext(tag as Int to shiftX)
@@ -202,7 +209,6 @@ class FragTVSchedule2 : Fragment(){
                     //不可以用smoothScrollBy 移動的數值會不對
                     if (it.first != this.tag as Int) scrollBy(it.second,0)
                 }
-                */
                 binding.containerSchedule.addView(view)
 
             }
@@ -245,7 +251,7 @@ class FragTVSchedule2 : Fragment(){
         binding.containerSchedule.addView(errView)
     }
 
-    //FIXME: loading UI
+    //TESTME: loading UI
     private fun feedLoadingView(){
         binding.containerSchedule.removeAllViews()
         repeat(3){

@@ -13,7 +13,7 @@ import com.example.tvguide.logd
  * Description:
  * 因為寬度每個都不同, 無法使用layoutManager 去計算位置和移動的寬度
  * 也無法用smoothScrollBy 會使他不斷的被移動
- *
+ * @func 單次捲動使用
  * @params
  * @params
  */
