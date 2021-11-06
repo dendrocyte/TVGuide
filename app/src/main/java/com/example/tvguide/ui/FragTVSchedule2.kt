@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.view.MarginLayoutParamsCompat
+import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
@@ -35,9 +35,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * Created by luyiling on 2021/10/9
  * Modified by
  * NOTE **Design 2**
+ * 用NestSV取代上下滑動
+ * FIXME: 但NestSV 沒有
  * TODO: 測試NextScrollView & HorizontalScrollView 對 Scan Vertical & Horizontal 的偵測 (which listener)
  * Description: With My Design UI/UX
- *
  * @params
  * @params
  */
@@ -49,12 +50,21 @@ class FragTVSchedule2 : Fragment(){
     private val binding get() = _binding!!
 
     /**
+     * @orientation: horizontal
      * 發起者移動多少 x量
      * Pair<Int, Int> = invoker to dx
      * timeline: pass idRes to dx
      * schedule: pass index to dx
      */
-    private val passiveScrollSubject = PublishSubject.create<Pair<Int, Int>>()
+    private val passiveHScrollSubject = PublishSubject.create<Pair<Int, Int>>()
+    /**
+     * @orientation: vertical
+     * 發起者移動多少 y量
+     * Pair<Int, Int> = invoker to dy
+     * channel: pass idRes to dy
+     * schedule: pass index to dy
+     */
+    private val passiveVScrollSubject = PublishSubject.create<Pair<Int, Int>>()
     private var disposable : Disposable? = null
 
     private val shareViewModel : LiveShareViewModel by sharedStateViewModel()
@@ -92,7 +102,7 @@ class FragTVSchedule2 : Fragment(){
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = timelineAdapter
             addStateScrollListener(timeLineScrollListener)
-            disposable = passiveScrollSubject.subscribe {
+            disposable = passiveHScrollSubject.subscribe {
                 logd("timeline: recv passive scroll...")
                 if (it.first != id) scrollBy(it.second,0)
             }
@@ -100,9 +110,41 @@ class FragTVSchedule2 : Fragment(){
 //            viewTreeObserver.addOnScrollChangedListener { }
         }
 
+        //NOTE NestSV's ScrollChangeListener 可以讓RV 直接跟手, 會有NestSV 和 RV 同步移動的效果
+        //Feature: Prgms (NestSV) scroll, chans (RV) scroll
+        with(binding.nestScrollView) {
+            setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                //NOTE 主動被動都會invoke, 用flag 來區別
+                //scroll vertical, sync with program vertical
+                logd("Scroll Type: ${this.scrollType}")
+                if (this.scrollType == ViewCompat.TYPE_TOUCH) {
+                    passiveVScrollSubject.onNext(this.id to scrollY - oldScrollY)
+                }
+            })
+            passiveVScrollSubject.subscribe {
+                logd("channel: recv passive scroll...")
+                //不可以用smoothScrollBy 移動的數值會不對
+                if (it.first != this.id) scrollBy(0,it.second)
+            }
+        }
+
+        //NOTE RV 主動滑時會與NestSV 不同步滑動起點，但會划動相同距離
         with(binding.recyclerChannel){
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
+            offsetListener = object : Schedule.OffsetScrollListener{
+                override fun onScrolled(dx: Int, dy: Int, accOffsetX: Int, accOffsetY: Int) {
+                    //主動被動都會invoke
+                }
+                override fun onScrollIDEState(rv: RecyclerView, shiftX: Int, shiftY: Int) {
+                    passiveVScrollSubject.onNext(this@with.id to shiftY)
+                }
+            }
+            passiveVScrollSubject.subscribe {
+                logd("channel: recv passive scroll...")
+                //不可以用smoothScrollBy 移動的數值會不對
+                if (it.first != this@with.id) scrollBy(0,it.second)
+            }
         }
 
         viewModel.TVSchedule.observe(viewLifecycleOwner){
@@ -139,7 +181,7 @@ class FragTVSchedule2 : Fragment(){
                 with(rv as Timeline){
                     /*主動scroll 要通知schedule recyclerview*/
                     println("timeline Scroll stop")
-                    passiveScrollSubject.onNext(binding.recyclerTimeline.id to shiftX)
+                    passiveHScrollSubject.onNext(binding.recyclerTimeline.id to shiftX)
                     shiftX = 0 //歸零
                 }
             }
@@ -176,7 +218,6 @@ class FragTVSchedule2 : Fragment(){
             val view =
                 layoutInflater.inflate(R.layout.single_live_schedule_my_design, binding.containerSchedule, false)
 
-            //FIXME: scroll vertical, sync with program vertical
             with(view.findViewById<Schedule>(R.id.recyclerProgram)) {
                 logd("child schedule id: ${this.id}")
                 setHasFixedSize(false)
@@ -206,11 +247,11 @@ class FragTVSchedule2 : Fragment(){
                     override fun onScrolled(dx: Int, dy: Int, accOffsetX: Int, accOffsetY: Int) {
                         //主動被動都會invoke
                     }
-                    override fun onScrollIDEState(rv: RecyclerView, shiftX: Int) {
-                        passiveScrollSubject.onNext(tag as Int to shiftX)
+                    override fun onScrollIDEState(rv: RecyclerView, shiftX: Int, shiftY: Int) {
+                        passiveHScrollSubject.onNext(tag as Int to shiftX)
                     }
                 }
-                passiveScrollSubject.subscribe {
+                passiveHScrollSubject.subscribe {
                     logd("schedule: recv passive scroll...")
                     //不可以用smoothScrollBy 移動的數值會不對
                     if (it.first != this.tag as Int) scrollBy(it.second,0)
@@ -280,7 +321,6 @@ class FragTVSchedule2 : Fragment(){
         val margin = (pin.layoutParams as ViewGroup.MarginLayoutParams).leftMargin + (pin.measuredWidth /2f)
         (this.layoutParams as ViewGroup.MarginLayoutParams).leftMargin = margin.toInt()
     }
-
 
 
 

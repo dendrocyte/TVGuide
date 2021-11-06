@@ -32,7 +32,7 @@
         android:descendantFocusability="blocksDescendants"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.example.tvguide.custom.Schedule
         android:layout_width="50dp"
         android:layout_height="0dp"
         android:id="@+id/recyclerChannel"
@@ -57,7 +57,7 @@
 
         <!-- TESTME: 有機會解鎖橫向捲動嗎   -->
         <!-- Scroll Vertical Only   -->
-        <androidx.core.widget.NestedScrollView
+        <com.example.tvguide.custom.ScheduleTable
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/nestScrollView"
@@ -75,7 +75,7 @@
                 android:orientation="vertical"
                 android:id="@+id/container_schedule"/>
 
-        </androidx.core.widget.NestedScrollView>
+        </com.example.tvguide.custom.ScheduleTable>
 <!--    </HorizontalScrollView>-->
 
 

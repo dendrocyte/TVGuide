@@ -36,7 +36,9 @@ import java.sql.DriverManager.println
  * Modified by
  *
  * TODO:
- * Description:
+ * NOTE: **Design 1**
+ * FIXME: 為了將 ByCurrent/ ByChannel 拉進來而留這一頁
+ * FIXME: 可以端看是否要改ＵＩ介面
  *
  * @must 必定要用nestScrollView 動態填入view 模擬recyclerview 的功能
  * 使得recyclerview 單一層，故可以監控scroll
@@ -263,7 +265,7 @@ class FragTVSchedule1 : Fragment(){
                     override fun onScrolled(dx: Int, dy: Int, accOffsetX: Int, accOffsetY: Int) {
                         /*主動被動都會invoke*/
                     }
-                    override fun onScrollIDEState(rv: RecyclerView, shiftX: Int) {
+                    override fun onScrollIDEState(rv: RecyclerView, shiftX: Int, shiftY: Int) {
                         passiveScrollSubject.onNext(tag as Int to shiftX)
                     }
                 }

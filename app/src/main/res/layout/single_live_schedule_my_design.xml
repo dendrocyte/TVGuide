@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_10">
 
+    <!-- 固定高度50dp   -->
+
     <com.example.tvguide.custom.Schedule
             android:layout_width="match_parent"
             android:layout_height="50dp"
