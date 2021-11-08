@@ -53,35 +53,34 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
             val list = mutableListOf<TVScheduleModel>()
             inner@ for ((index, liveScheduleModel) in hashMap[k]!!.withIndex()){
                 println("channelName: $k, index:$index, ${hashMap[k]!!.size}")
-                //++++++++++++++ 第一個資料 +++++++++++++++++//
-                if (index == 0) {
-                    //No content available frame
-                    /*val ob = LiveScheduleModel(
-                        liveScheduleModel.channelName,
-                        currentDateStart,
-                        currentDateEnd,
-                        null,
-                        null,
-                        null
-                    )*/
-                    when{
-                        //資料過期
-                        liveScheduleModel.scheduleEnd < currentDateStart -> {
-                            println("資料都過期了唷")
-                            //創建 gap (1H 為單位)
-                            list.addAll(create1HEmptyGaps(currentDateStart, currentDateEnd, liveScheduleModel.channelName))
-                            //創建一整段的gap
-                            //list.add(ob)
-                            break@inner
-                        }
-                        //節目有跨過晚上12H
-                        liveScheduleModel.scheduleStart < currentDateStart -> {
-                            println("資料超過午夜12H唷")
-                            liveScheduleModel.scheduleStart = currentDateStart
-                            list.add(liveScheduleModel)
-                        }
-                        else -> {
-                            println("正常資料")
+                when{
+                    //資料過期
+                    liveScheduleModel.scheduleEnd < currentDateStart -> {
+                        println("資料都過期了唷")
+                        //不做其他事, 交由下一節目處理
+                    }
+                    //節目有跨過晚上12H
+                    liveScheduleModel.scheduleStart < currentDateStart -> {
+                        println("資料超過午夜12H唷")
+                        liveScheduleModel.scheduleStart = currentDateStart
+                        list.add(liveScheduleModel)
+                    }
+                    else -> {
+                        println("正常資料")
+
+                        if (index == 0){
+                            //++++++++++++++ 第一個資料 +++++++++++++++++//
+
+                            //No content available frame
+                            /*val ob = LiveScheduleModel(
+                                liveScheduleModel.channelName,
+                                currentDateStart,
+                                currentDateEnd,
+                                null,
+                                null,
+                                null
+                            )*/
+
                             //創建 gap (1H 為單位)
                             list.addAll(create1HEmptyGaps(
                                 currentDateStart,
@@ -92,35 +91,37 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
                             //ob.scheduleEnd = liveScheduleModel.scheduleStart
                             //list.add(ob)
                             list.add(liveScheduleModel)
+
+                        } else {
+                            //++++++++++++++ no.2...n資料 +++++++++++++++++//
+
+                            println("no.2..n: $index, ${hashMap[k]!!.lastIndex}")
+                            val newStart = liveScheduleModel.scheduleStart
+                            val lastEnd = hashMap[k]!![index - 1].scheduleEnd
+                            if (newStart != lastEnd) {
+                                //No content available frame
+                                /*val ob = LiveScheduleModel(
+                                    liveScheduleModel.channelName,
+                                    lastEnd,
+                                    newStart,
+                                    null,
+                                    null,
+                                    null
+                                )*/
+
+                                //創建 gap (1H 為單位)
+                                list.addAll(create1HEmptyGaps(lastEnd, newStart, liveScheduleModel.channelName))
+                                //創建一整段的gap
+                                //list.add(ob)
+                                list.add(liveScheduleModel)
+                            } else {
+                                list.add(liveScheduleModel)
+                            }
                         }
+
                     }
                 }
 
-                //++++++++++++++ no.2...n資料 +++++++++++++++++//
-                if (index != 0) {//hashMap[k]!!.lastIndex
-                    println("no.2..n: $index, ${hashMap[k]!!.lastIndex}")
-                    val newStart = liveScheduleModel.scheduleStart
-                    val lastEnd = hashMap[k]!![index - 1].scheduleEnd
-                    if (newStart != lastEnd) {
-                        //No content available frame
-                        /*val ob = LiveScheduleModel(
-                            liveScheduleModel.channelName,
-                            lastEnd,
-                            newStart,
-                            null,
-                            null,
-                            null
-                        )*/
-
-                        //創建 gap (1H 為單位)
-                        list.addAll(create1HEmptyGaps(lastEnd, newStart, liveScheduleModel.channelName))
-                        //創建一整段的gap
-                        //list.add(ob)
-                        list.add(liveScheduleModel)
-                    } else {
-                        list.add(liveScheduleModel)
-                    }
-                }
                 //++++++++++++++ 最後一個資料 +++++++++++++++++//
                 if (index == hashMap[k]!!.lastIndex) {
                     val newEnd = liveScheduleModel.scheduleEnd
@@ -134,17 +135,14 @@ abstract class ITVScheduleUsecase <out T>(timelineDesignFlag : TickDesign) {
                         null
                     )*/
                     when{
-                        hashMap[k]!!.size == 1 ->{//代表已做完index = 0
-                            //創建 gap (1H 為單位)
+                        //資料過期
+                        liveScheduleModel.scheduleEnd < currentDateStart ->{
                             list.addAll(create1HEmptyGaps(
-                                newEnd, currentDateEnd, liveScheduleModel.channelName
+                                currentDateStart, currentDateEnd, liveScheduleModel.channelName
                             ))
-                            //創建一整段的gap
-                            //list.add(ob)
                         }
                         newEnd > currentDateEnd -> {
-                            liveScheduleModel.scheduleEnd = currentDateEnd
-                            list.add(liveScheduleModel)
+                            list.last().scheduleEnd = currentDateEnd
                         }
                         else ->{
                             //之前已經加過資料了

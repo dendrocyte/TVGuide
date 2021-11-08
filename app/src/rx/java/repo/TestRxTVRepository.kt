@@ -24,7 +24,8 @@ class TestRxTVRepository(private val localCall : TVLocalAPICall) : IRxTVReposito
             .map { model ->
                 val hashMap = hashMapOf<String, List<TVScheduleModel>>()
                 model.forEach { resp ->
-                    hashMap[resp.channel] = resp.programs.map { ModelMap.toTVScheduleModel(it) }
+                    //排除重複的節目時段
+                    hashMap[resp.channel] = resp.programs.toSet().map { ModelMap.toTVScheduleModel(it) }
                 }
 
                 hashMap

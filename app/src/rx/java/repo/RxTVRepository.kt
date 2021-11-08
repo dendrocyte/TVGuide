@@ -24,7 +24,7 @@ class RxTVRepository(private val call : TVRemoteAPICall) : IRxTVRepository {
             .map { model ->
                 val hashMap = hashMapOf<String, List<TVScheduleModel>>()
                 model.forEach { resp ->
-                    hashMap[resp.channel] = resp.programs.map { ModelMap.toTVScheduleModel(it) }
+                    hashMap[resp.channel] = resp.programs.toSet().map { ModelMap.toTVScheduleModel(it) }
                 }
 
                 hashMap
