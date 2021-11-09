@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TVGuide</string>
+    <string name="lost_connection">Lost Connection</string>
+    <string name="no_epg">No EPG</string>
 </resources>

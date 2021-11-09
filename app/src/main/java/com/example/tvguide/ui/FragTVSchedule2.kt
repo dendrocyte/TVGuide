@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -211,7 +209,7 @@ class FragTVSchedule2 : Fragment(){
         binding.containerSchedule.removeAllViews()
 
         //校正對齊線
-        binding.nestScrollView.correctStartLine()
+        binding.nestScrollView.correctStartLine(false)
 
         data.entries.forEach { info ->
             //add live_schedule
@@ -265,18 +263,26 @@ class FragTVSchedule2 : Fragment(){
 
 
     private fun feedEmptyErrData(isErr: Boolean){
-        //FIXME modify scrollView margin?
-        //modify scrollView margin
-        //modifyScrollView(R.id.root)
+        //這樣Animation 才不會不見
+        val isSameErrorShowing =
+                binding.containerSchedule.findViewById<TextView>(R.id.tVDescript)?.run {
+                    if (isErr)
+                        text == resources.getText(R.string.lost_connection)
+                    else
+                        text == resources.getText(R.string.no_epg)
+                } ?: false
+        println("isSameErr : $isSameErrorShowing")
+        if (isSameErrorShowing) return
+
+        binding.nestScrollView.correctStartLine(true)
 
         binding.containerSchedule.removeAllViews()
         val layout = if (isErr) R.layout.frag_empty_error1 else R.layout.frag_empty_error3
         val errView = layoutInflater.inflate(layout, binding.containerSchedule, false)
         val param = errView.layoutParams as ViewGroup.LayoutParams
         param.width = resources.displayMetrics.widthPixels
-        if (!isErr) errView.findViewById<TextView>(R.id.tVDescript).text = "no schedule available"
         val loading = errView.findViewById<ProgressBar>(R.id.loading)
-        errView.findViewById<Button>(R.id.btnRetry).setOnClickListener { view ->
+        errView.findViewById<ImageButton>(R.id.iBRetry).setOnClickListener { view ->
             //fetch vod list: shall be Unit not ()-> Unit
             logd("Fetch...")
             //make the retry btn to wait fetch result
@@ -310,16 +316,33 @@ class FragTVSchedule2 : Fragment(){
     }
 
 
-    //右移對齊tick icon的中心
-    private fun View.correctStartLine(){
-        //偵測tick icon 得到要調整的間距 (icon 隨不同機體會用相對應的大小)
-        val tick = layoutInflater.inflate(R.layout.single_tick_start, null)
-        tick.findViewById<TextView>(R.id.tVtick).text = "00:00"
-        val pin = tick.findViewById<ImageView>(R.id.iVpin)
-        tick.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        println("TEST: ${(pin.layoutParams as ViewGroup.MarginLayoutParams).leftMargin} + ${(pin.measuredWidth /2f)}")
-        val margin = (pin.layoutParams as ViewGroup.MarginLayoutParams).leftMargin + (pin.measuredWidth /2f)
-        (this.layoutParams as ViewGroup.MarginLayoutParams).leftMargin = margin.toInt()
+
+
+    private fun View.correctStartLine(isErrorPage : Boolean){
+        if(isErrorPage){
+            //右移對齊parent
+
+            val set = ConstraintSet()
+            set.clone(binding.root)
+            set.connect(this.id, ConstraintSet.START,R.id.root, ConstraintSet.START)
+            set.applyTo(binding.root)
+        }else {
+            //右移對齊tick icon的中心
+
+            //偵測tick icon 得到要調整的間距 (icon 隨不同機體會用相對應的大小)
+            val tick = layoutInflater.inflate(R.layout.single_tick_start, null)
+            tick.findViewById<TextView>(R.id.tVtick).text = "00:00"
+            val pin = tick.findViewById<ImageView>(R.id.iVpin)
+            tick.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            println("TEST: ${(pin.layoutParams as ViewGroup.MarginLayoutParams).leftMargin} + ${(pin.measuredWidth /2f)}")
+            val margin = (pin.layoutParams as ViewGroup.MarginLayoutParams).leftMargin + (pin.measuredWidth /2f)
+
+            val set = ConstraintSet()
+            set.clone(binding.root)
+            set.connect(this.id, ConstraintSet.START,R.id.recyclerChannel, ConstraintSet.START, margin.toInt())
+            set.applyTo(binding.root)
+        }
+
     }
 
 

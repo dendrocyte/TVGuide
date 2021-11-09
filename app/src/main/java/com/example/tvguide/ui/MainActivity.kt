@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
          * FragTVSchedule2  頻道欄和節目表, 沒有標準線, NestSV移動會讓頻爆欄跟手
          * FragTVSchedule3  頻道欄和節目表, 沒有標準線, 全部捲動都不跟手
          */
-        FragTVSchedule2().navi(supportFragmentManager, R.id.container, false)
+        FragTVSchedule1().navi(supportFragmentManager, R.id.container, false)
 
     }
 }

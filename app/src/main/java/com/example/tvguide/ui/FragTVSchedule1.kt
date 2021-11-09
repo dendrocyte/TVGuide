@@ -3,9 +3,7 @@ package com.example.tvguide.ui
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
@@ -17,11 +15,11 @@ import com.example.tvguide.adapter.TimelineAdapter
 import com.example.tvguide.custom.LineMarkerAgent
 import com.example.tvguide.custom.Schedule
 import com.example.tvguide.custom.Timeline
-import com.example.tvguide.databinding.FragLiveScheduleBinding
 import com.example.tvguide.logd
 import com.example.tvguide.model.Status
 import com.example.tvguide.ITVScheduleViewModel
 import com.example.tvguide.custom.ScaleAgent
+import com.example.tvguide.databinding.FragLiveScheduleBinding
 import com.example.tvguide.model.TVScheduleModel
 import com.example.tvguide.vm.LiveShareViewModel
 import io.reactivex.rxjava3.disposables.Disposable
@@ -138,12 +136,6 @@ class FragTVSchedule1 : Fragment(){
         val constraintSet = ConstraintSet()
         constraintSet.clone(binding.root)
         constraintSet.connect(R.id.scrollView, ConstraintSet.START, startId, ConstraintSet.START)
-        constraintSet.connect(
-            R.id.scrollView,
-            ConstraintSet.START,
-            R.id.recyclerTimeline,
-            ConstraintSet.START
-        )
         constraintSet.applyTo(binding.root)
     }
 
@@ -283,17 +275,41 @@ class FragTVSchedule1 : Fragment(){
 
 
     private fun feedEmptyErrData(isErr: Boolean){
-        //modify scrollView margin
+        //這樣Animation 才不會不見
+        val isSameErrorShowing =
+                binding.containerSchedule.findViewById<TextView>(R.id.tVDescript)?.run {
+                    if (isErr)
+                        text == resources.getText(R.string.lost_connection)
+                    else
+                        text == resources.getText(R.string.no_epg)
+                } ?: false
+        if (isSameErrorShowing) return
+
         modifyScrollView(R.id.root)
 
         binding.containerSchedule.removeAllViews()
-        val layout = if (isErr) R.layout.frag_empty_error1 else R.layout.frag_empty_error3
+
+        /**
+         * +++++++++++++ ScrollView
+         * +++++++++++++ LinearLayout
+         * +           +
+         * + errorView +
+         * +           +
+         * +++++++++++++ LinearLayout
+         * +++++++++++++ ScrollView
+         *
+         * NOTE: error View 就要用LinearLayout 為底
+         * 不能用ConstraintLayout 為底
+         * 否則layout的設置會跑掉
+         */
+        val layout = if (isErr) R.layout.frag_empty_error1l else R.layout.frag_empty_error3l
         val errView = layoutInflater.inflate(layout, binding.containerSchedule, false)
+
         val param = errView.layoutParams as ViewGroup.LayoutParams
         param.width = resources.displayMetrics.widthPixels
-        if (!isErr) errView.findViewById<TextView>(R.id.tVDescript).text = "no schedule available"
+
         val loading = errView.findViewById<ProgressBar>(R.id.loading)
-        errView.findViewById<Button>(R.id.btnRetry).setOnClickListener { view ->
+        errView.findViewById<ImageButton>(R.id.iBRetry).setOnClickListener { view ->
             //fetch vod list: shall be Unit not ()-> Unit
             logd("Fetch...")
             //make the retry btn to wait fetch result
