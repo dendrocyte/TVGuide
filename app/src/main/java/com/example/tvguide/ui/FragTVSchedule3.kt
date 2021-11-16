@@ -290,12 +290,13 @@ class FragTVSchedule3 : Fragment(){
 
 
     private fun View.correctStartLine(isErrorPage : Boolean){
+        println("TEST isError: $isErrorPage")
         if(isErrorPage){
             //右移對齊parent
 
             val set = ConstraintSet()
             set.clone(binding.root)
-            set.connect(this.id, ConstraintSet.START,R.id.root, ConstraintSet.START)
+            set.connect(this.id, ConstraintSet.START,R.id.root, ConstraintSet.START, 0)
             set.applyTo(binding.root)
         }else {
             //右移對齊tick icon的中心
@@ -310,7 +311,7 @@ class FragTVSchedule3 : Fragment(){
 
             val set = ConstraintSet()
             set.clone(binding.root)
-            set.connect(this.id, ConstraintSet.START,R.id.recyclerChannel, ConstraintSet.START, margin.toInt())
+            set.connect(this.id, ConstraintSet.START,R.id.recyclerTimeline, ConstraintSet.START, margin.toInt())
             set.applyTo(binding.root)
         }
 

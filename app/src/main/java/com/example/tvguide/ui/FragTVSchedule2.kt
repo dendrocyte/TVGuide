@@ -339,7 +339,7 @@ class FragTVSchedule2 : Fragment(){
 
             val set = ConstraintSet()
             set.clone(binding.root)
-            set.connect(this.id, ConstraintSet.START,R.id.recyclerChannel, ConstraintSet.START, margin.toInt())
+            set.connect(this.id, ConstraintSet.START,R.id.recyclerTimeline, ConstraintSet.START, margin.toInt())
             set.applyTo(binding.root)
         }
 

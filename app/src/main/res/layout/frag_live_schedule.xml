@@ -9,28 +9,17 @@
     android:background="@color/black"
     android:focusable="false"
     android:clickable="false">
-<!--FIXME 待捕上    android:background="@color/dashboard_bg"-->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="15dp"
-        android:alpha="0.87"
-        android:id="@+id/title"
-        android:textSize="@dimen/sp_18"
-        android:textColor="@color/white"
-        android:text="Timeline"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+
+<!-- TODO: 目前這個畫面上不會用，但需要保留，可以做各種切版的畫面   -->
 
     <com.example.tvguide.custom.Timeline
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/recyclerTimeline"
         android:layout_marginStart="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_20"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:descendantFocusability="blocksDescendants"
         />
