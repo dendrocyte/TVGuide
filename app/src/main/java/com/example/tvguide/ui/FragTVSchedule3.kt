@@ -175,6 +175,21 @@ class FragTVSchedule3 : Fragment(){
 
         }
 
+        //讓使用者可以更新
+        with(binding.swipe){
+            setColorSchemeResources(R.color.teal_200, R.color.purple_200)
+            setProgressBackgroundColorSchemeResource(R.color.black)
+
+            setOnRefreshListener {
+                isRefreshing = true
+                viewModel.fetchLiveScheduleByUser()
+                viewModel.onFinished.observe(viewLifecycleOwner) {
+                    logd("Fetch list done by User")
+                    isRefreshing = false
+                }
+            }
+        }
+
 
     }
 

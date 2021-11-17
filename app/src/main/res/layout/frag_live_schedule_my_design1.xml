@@ -1,59 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root"
-    android:background="@drawable/bg_1"
-    android:focusable="false"
-    android:clickable="false">
+    android:id="@+id/swipe">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:layout_marginStart="33dp"
-        android:src="@drawable/big_mouth"
-        android:id="@+id/iVbigMouth"
-        tools:tint="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/root"
+        android:background="@drawable/bg_1"
+        android:focusable="false"
+        android:clickable="false">
 
-    <com.example.tvguide.custom.Timeline
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/recyclerTimeline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/recyclerChannel"
-        app:layout_constraintTop_toTopOf="@+id/iVbigMouth"
-        android:descendantFocusability="blocksDescendants"
-        />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:layout_marginStart="33dp"
+            android:src="@drawable/big_mouth"
+            android:id="@+id/iVbigMouth"
+            tools:tint="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
-    <com.example.tvguide.custom.Schedule
-        android:layout_width="50dp"
-        android:layout_height="0dp"
-        android:id="@+id/recyclerChannel"
-        android:layout_marginTop="59dp"
-        app:layout_constraintStart_toStartOf="@+id/iVbigMouth"
-        app:layout_constraintEnd_toEndOf="@+id/iVbigMouth"
-        app:layout_constraintTop_toBottomOf="@+id/iVbigMouth"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        <com.example.tvguide.custom.Timeline
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/recyclerTimeline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/recyclerChannel"
+            app:layout_constraintTop_toTopOf="@+id/iVbigMouth"
+            android:descendantFocusability="blocksDescendants"
+            />
+
+        <com.example.tvguide.custom.Schedule
+            android:layout_width="50dp"
+            android:layout_height="0dp"
+            android:id="@+id/recyclerChannel"
+            android:layout_marginTop="59dp"
+            app:layout_constraintStart_toStartOf="@+id/iVbigMouth"
+            app:layout_constraintEnd_toEndOf="@+id/iVbigMouth"
+            app:layout_constraintTop_toBottomOf="@+id/iVbigMouth"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
 
-    <!-- Scroll Horizontal Only   -->
-    <!-- 可以處理整個頁橫向移動  -->
-<!--    <HorizontalScrollView-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:id="@+id/horizontalScroll"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@id/recyclerChannel"-->
-<!--        app:layout_constraintStart_toStartOf="@id/recyclerTimeline">-->
+        <!-- Scroll Horizontal Only   -->
+        <!-- 可以處理整個頁橫向移動  -->
+        <!--    <HorizontalScrollView-->
+        <!--        android:layout_width="0dp"-->
+        <!--        android:layout_height="0dp"-->
+        <!--        android:id="@+id/horizontalScroll"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="@id/recyclerChannel"-->
+        <!--        app:layout_constraintStart_toStartOf="@id/recyclerTimeline">-->
 
         <!-- TESTME: 有機會解鎖橫向捲動嗎   -->
         <!-- Scroll Vertical Only   -->
@@ -71,7 +76,9 @@
 
 
         </com.example.tvguide.custom.Schedule>
-<!--    </HorizontalScrollView>-->
+        <!--    </HorizontalScrollView>-->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
