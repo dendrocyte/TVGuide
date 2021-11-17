@@ -139,6 +139,7 @@ class MainActivity : AppCompatActivity() {
         init {
             addItemType(MenuModel.TYPE_HEADER, R.layout.single_menu_header)
             addItemType(MenuModel.TYPE_DATA, R.layout.single_menu_data)
+            addChildClickViewIds(R.id.tVtitle)
         }
 
 
@@ -161,21 +162,27 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
+        //改寫 listener
+        override fun setOnItemChildClick(v: View, position: Int) {
+            if (data[position].itemType == MenuModel.TYPE_DATA){
+                super.setOnItemChildClick(v, position)
+            }
+        }
 
         /**
          * @return start-end range for notifyChange
          * NOTE: 操作這方法途中不要牽扯itemInsert, itemDeleted
          */
         fun updateIsSelected(groupId : Int, itemId: Int) : IntRange{
+            //println("groupId=$groupId, itemId=$itemId")
             var startPosition = -1
             var endPosition = -1
-            data.forEachIndexed{ index, it ->
-                println("check: $index")
 
+            data.forEachIndexed{ index, it ->
+                //println("===> groupId=${it.groupId}, itemId=${it.itemId}, isSelected=${it.isSelected}")
                 if (it.groupId == groupId && it.itemType == MenuModel.TYPE_DATA){
-                    it.isSelected = when(it.isSelected){
-                        true -> {
+                    it.isSelected = when{
+                        it.isSelected -> {//true
                             startPosition = index
                             false
                         }
@@ -187,10 +194,12 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                //println("---$startPosition, $endPosition")
                 //start & end 非初始值 -> 找出位置
-                if (startPosition != -1 && endPosition != -1)
+                if (startPosition != -1 && endPosition != -1){
+                    Log.d(TAG, "found start-end pointer!" )
                     return startPosition..endPosition
-                //FIXME: change data's isSelected
+                }
             }
             Log.e(TAG, "updateIsSelected: Not Find the Selected Item" )
             return 0..1
