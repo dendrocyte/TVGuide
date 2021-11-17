@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="67dp"
+    android:textSize="16sp"
+    android:textColor="#ffffff"
+    android:id="@+id/tVtitle"
+    android:letterSpacing="0.04"
+    android:paddingStart="19dp"
+    android:paddingEnd="@dimen/dp_19"
+    android:gravity="center"
+    tools:background="@color/teal_200"
+    tools:text="Data"
+    tools:viewBindingIgnore="true">
+
+</TextView>
