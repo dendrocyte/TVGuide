@@ -13,10 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:scaleType="centerCrop"
+        android:background="#272525"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
-    <!--FIXME 再多設計no content UI, 待捕上 android:background="@color/color_empty_frame"-->
 
     <ImageView
         android:id="@+id/iVmask"
@@ -53,11 +53,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/tVmsg"
-        android:text="No Content Available"
+        android:text="No Program"
+        android:autoSizeMinTextSize="@dimen/sp_8"
+        android:ellipsize="end"
+        android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_10"
         android:textStyle="bold"
         android:maxLines="3"
+        android:alpha="0.5"
         android:layout_marginStart="9dp"
         android:layout_marginEnd="9dp"
         app:layout_constraintTop_toTopOf="@id/iVthumbnail"
