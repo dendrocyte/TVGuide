@@ -8,7 +8,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="#242222"
     tools:openDrawer="start">
+
+    <!--
+    NOTE DrawerLayout的背景色要和 NavigationView 一樣，
+    NOTE 這樣在打開抽屜推移時會露出DrawerLayout的底色
+      -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

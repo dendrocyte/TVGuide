@@ -11,7 +11,7 @@
     android:divider="@android:color/transparent"
     android:background="#242222">
 
-    <!-- TODO:  android:choiceMode="singleChoice"   -->
+    <!-- PATCH:  android:choiceMode="singleChoice"   -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

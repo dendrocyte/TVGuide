@@ -133,25 +133,52 @@ class MainActivity : AppCompatActivity() {
                             binding.container.translationX = binding.drawerSheet.navigationView.width * slideOffset
                         }
 
-                        override fun onDrawerOpened(drawerView: View) {
-                            //DO?
-                        }
+                        override fun onDrawerOpened(drawerView: View) {}
 
-                        override fun onDrawerClosed(drawerView: View) {
-                            //DO?
-                        }
+                        override fun onDrawerClosed(drawerView: View) {}
 
-                        override fun onDrawerStateChanged(newState: Int) {
-                            //DO?
-                        }
+                        override fun onDrawerStateChanged(newState: Int) {}
                     }
                     addDrawerListener(drawerListenr!!)
                 }
 
             }
             "Scale" -> {
-                binding.drawer.resetToDefault()
-                //TODO
+                with(binding.drawer){
+                    resetToDefault()
+                    setScrimColor(Color.TRANSPARENT)
+                    var scaleFactor = 5f
+                    drawerListenr = object : DrawerLayout.DrawerListener {
+                        override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                            /**
+                             * open drawer : slideOffset(0->1)
+                             * close drawer: slideOffset(1->0)
+                             */
+                            println("slideOffset: $slideOffset")
+                            binding.container.translationX =
+                                binding.drawerSheet.navigationView.width * slideOffset
+                            /**
+                             * 這樣會把content 都移到畫面外
+                             * 需要有一個factor才行
+                             *
+                              binding.container.scaleX = 1-slideOffset
+                              binding.container.scaleY = 1-slideOffset
+                             *
+                             */
+                            //PATCH: 如果要沒有navigationView 的陰影，可能要將NavigationView 換成LinearLayout
+                            binding.container.scaleX = 1-(slideOffset/scaleFactor)
+                            binding.container.scaleY = 1-(slideOffset/scaleFactor)
+                        }
+
+                        override fun onDrawerOpened(drawerView: View) {}
+
+                        override fun onDrawerClosed(drawerView: View) {}
+
+                        override fun onDrawerStateChanged(newState: Int) {}
+                    }
+                    addDrawerListener(drawerListenr!!)
+                }
+
             }
         }
     }
@@ -162,6 +189,9 @@ class MainActivity : AppCompatActivity() {
         this.setScrimColor(0x99000000.toInt())//DrawerLayout.DEFAULT_SCRIM_COLOR = 0x99000000
         //Shift effect: 因為是點開drawer,content已位移,所以content 位移也要歸零
         binding.container.translationX = 0f
+        //Scale effect:
+        binding.container.scaleX = 1f
+        binding.container.scaleY = 1f
     }
 
 
