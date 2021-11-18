@@ -26,6 +26,14 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/navigation_view"/>
+    <!--
+    在沒有kotlin synthetics 之前：
+    避免在<include 命名id,在宣告view 時可以透過root 直接取得include 內的view
+
+    View Binding:
+    在<include 命名id，才能在宣告view時利用synthetic 方式取得
+      -->
+    <include layout="@layout/navigation_view"
+        android:id="@+id/drawerSheet"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

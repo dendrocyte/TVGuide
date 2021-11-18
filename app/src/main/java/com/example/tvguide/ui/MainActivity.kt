@@ -1,11 +1,12 @@
 package com.example.tvguide.ui
 
+
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,10 +16,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.example.tvguide.R
 import com.example.tvguide.databinding.ActivityMainBinding
-
-
+import com.example.tvguide.databinding.NavigationViewBinding
 import com.example.tvguide.logd
-import com.example.tvguide.loge
 import com.example.tvguide.model.MenuModel
 import com.example.tvguide.navi
 import com.example.tvguide.vm.MainViewModel
@@ -27,6 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModel : MainViewModel by viewModel()
+    private var drawerListenr : DrawerLayout.DrawerListener? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,28 +43,6 @@ class MainActivity : AppCompatActivity() {
         /////////////////////// 初始化drawer /////////////////////////////
 
         with(binding.drawer){
-            /**
-             * 不實作listener
-             * 這樣就能打開/關閉 drawer
-             *
-             */
-            addDrawerListener(object : DrawerLayout.DrawerListener{
-                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                    //DO?
-                }
-
-                override fun onDrawerOpened(drawerView: View) {
-                    //DO?
-                }
-
-                override fun onDrawerClosed(drawerView: View) {
-                    //DO?
-                }
-
-                override fun onDrawerStateChanged(newState: Int) {
-                    //DO?
-                }
-            })
 
             for(item in viewModel.menuList){
                 if (item.isSelected) itemOn(item.title)
@@ -78,10 +56,15 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(context)
             logd("drawer menu size: ${viewModel.menuList.size}")
             adapter = MenuAdapter(viewModel.menuList).apply {
-                setDiffCallback(object : DiffUtil.ItemCallback<MenuModel>(){
-                    override fun areItemsTheSame(oldItem: MenuModel, newItem: MenuModel): Boolean = true
-                    override fun areContentsTheSame(oldItem: MenuModel, newItem: MenuModel): Boolean =
-                            oldItem.hashCode() == newItem.hashCode()
+                setDiffCallback(object : DiffUtil.ItemCallback<MenuModel>() {
+                    override fun areItemsTheSame(oldItem: MenuModel, newItem: MenuModel): Boolean =
+                        true
+
+                    override fun areContentsTheSame(
+                        oldItem: MenuModel,
+                        newItem: MenuModel
+                    ): Boolean =
+                        oldItem.hashCode() == newItem.hashCode()
                 })
                 setOnItemChildClickListener{ adapter: BaseQuickAdapter<*, *>, _: View?, position: Int ->
                     logd("selected position: $position")
@@ -90,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
                         if (!alreadySelected) {
                             updateIsSelected(groupId, itemId).run{
-                                notifyItemRangeChanged(start, last-start +1)
+                                notifyItemRangeChanged(start, last - start + 1)
                             }
 
                             itemOn(title)
@@ -120,20 +103,66 @@ class MainActivity : AppCompatActivity() {
                  */
                 FragTVSchedule3().navi(supportFragmentManager, R.id.container, false)
             }
-            "Channel Search" -> {}
-            "Slide bar" -> {}
-            "Gesture" -> {}
-            "Overlap" -> {}
-            "Shift" -> {}
-            "Scale" -> {}
+            "Channel Search" -> {
+
+            }
+            "Slide bar" -> {
+            }
+            "Gesture" -> {
+            }
+            "Overlap" -> {
+                /**
+                 * 不實作listener
+                 * 這樣就能打開/關閉 drawer
+                 *
+                 */
+                binding.drawer.resetToDefault()
+            }
+            "Shift" -> {
+                with(binding.drawer){
+                    resetToDefault()
+                    setScrimColor(Color.TRANSPARENT)
+                    drawerListenr = object : DrawerLayout.DrawerListener {
+                        override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                            /**
+                             * open drawer : slideOffset(0->1)
+                             * close drawer: slideOffset(1->0)
+                             */
+                            println("slideOffset: $slideOffset")
+                            binding.container.translationX = binding.drawerSheet.navigationView.width * slideOffset
+                        }
+
+                        override fun onDrawerOpened(drawerView: View) {
+                            //DO?
+                        }
+
+                        override fun onDrawerClosed(drawerView: View) {
+                            //DO?
+                        }
+
+                        override fun onDrawerStateChanged(newState: Int) {
+                            //DO?
+                        }
+                    }
+                    addDrawerListener(drawerListenr!!)
+                }
+
+            }
+            "Scale" -> {
+                binding.drawer.resetToDefault()
+            }
         }
     }
 
+    private fun DrawerLayout.resetToDefault(){
+        if (drawerListenr != null) this.removeDrawerListener(drawerListenr!!)
+        //當drawer右移，是否有陰影
+        this.setScrimColor(0x99000000.toInt())//DrawerLayout.DEFAULT_SCRIM_COLOR = 0x99000000
+    }
 
 
-
-    inner class MenuAdapter(list : List<MenuModel>) : BaseMultiItemQuickAdapter<MenuModel,BaseViewHolder>(
-            list.toMutableList()
+    inner class MenuAdapter(list: List<MenuModel>) : BaseMultiItemQuickAdapter<MenuModel, BaseViewHolder>(
+        list.toMutableList()
     ){
         private val TAG = MenuAdapter::class.java.simpleName
         init {
@@ -150,13 +179,15 @@ class MainActivity : AppCompatActivity() {
                     holder.getView<TextView>(R.id.tVtitle).text = item.title
                 }
                 MenuModel.TYPE_DATA -> {
-                    with(holder.getView<TextView>(R.id.tVtitle)){
+                    with(holder.getView<TextView>(R.id.tVtitle)) {
                         text = item.title
                         isSelected = item.isSelected
-                        setBackgroundColor(Color.parseColor(
+                        setBackgroundColor(
+                            Color.parseColor(
                                 if (isSelected) "#575647"
                                 else "#c4c4c4"
-                        ))
+                            )
+                        )
                     }
                 }
             }
@@ -173,7 +204,7 @@ class MainActivity : AppCompatActivity() {
          * @return start-end range for notifyChange
          * NOTE: 操作這方法途中不要牽扯itemInsert, itemDeleted
          */
-        fun updateIsSelected(groupId : Int, itemId: Int) : IntRange{
+        fun updateIsSelected(groupId: Int, itemId: Int) : IntRange{
             //println("groupId=$groupId, itemId=$itemId")
             var startPosition = -1
             var endPosition = -1
@@ -197,11 +228,11 @@ class MainActivity : AppCompatActivity() {
                 //println("---$startPosition, $endPosition")
                 //start & end 非初始值 -> 找出位置
                 if (startPosition != -1 && endPosition != -1){
-                    Log.d(TAG, "found start-end pointer!" )
+                    Log.d(TAG, "found start-end pointer!")
                     return startPosition..endPosition
                 }
             }
-            Log.e(TAG, "updateIsSelected: Not Find the Selected Item" )
+            Log.e(TAG, "updateIsSelected: Not Find the Selected Item")
             return 0..1
         }
     }
