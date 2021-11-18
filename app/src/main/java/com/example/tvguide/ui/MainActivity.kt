@@ -40,6 +40,18 @@ class MainActivity : AppCompatActivity() {
         //setContentView(R.layout.activity_main)
 
 
+        ////////////////////// 全螢幕 ////////////////////////////////////
+
+        /**
+         * @version > Android 11 (R)
+         * windowInsetsController instead
+         * @version < Android 11 (R)
+         * systemUiVisibility
+         *
+         * statusBarColor 無法顯示刷透明度的顏色，即使colorString有含透明度的值，也無法
+         */
+        window.statusBarColor = Color.parseColor("#c45a5a")
+
 
         /////////////////////// 初始化drawer /////////////////////////////
 
