@@ -16,12 +16,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.example.tvguide.R
 import com.example.tvguide.databinding.ActivityMainBinding
-import com.example.tvguide.databinding.NavigationViewBinding
 import com.example.tvguide.logd
 import com.example.tvguide.model.MenuModel
 import com.example.tvguide.navi
 import com.example.tvguide.vm.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.math.max
+import kotlin.math.min
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                     with(data[position]){
                         val alreadySelected = isSelected
 
-                        if (!alreadySelected) {
+                        if (!alreadySelected && data[position].itemType == MenuModel.TYPE_DATA) {
                             updateIsSelected(groupId, itemId).run{
                                 notifyItemRangeChanged(start, last - start + 1)
                             }
@@ -150,6 +151,7 @@ class MainActivity : AppCompatActivity() {
             }
             "Scale" -> {
                 binding.drawer.resetToDefault()
+                //TODO
             }
         }
     }
@@ -158,6 +160,8 @@ class MainActivity : AppCompatActivity() {
         if (drawerListenr != null) this.removeDrawerListener(drawerListenr!!)
         //當drawer右移，是否有陰影
         this.setScrimColor(0x99000000.toInt())//DrawerLayout.DEFAULT_SCRIM_COLOR = 0x99000000
+        //Shift effect: 因為是點開drawer,content已位移,所以content 位移也要歸零
+        binding.container.translationX = 0f
     }
 
 
@@ -205,31 +209,31 @@ class MainActivity : AppCompatActivity() {
          * NOTE: 操作這方法途中不要牽扯itemInsert, itemDeleted
          */
         fun updateIsSelected(groupId: Int, itemId: Int) : IntRange{
-            //println("groupId=$groupId, itemId=$itemId")
-            var startPosition = -1
-            var endPosition = -1
+            println("groupId=$groupId, itemId=$itemId")
+            var position0 = -1
+            var position1 = -1
 
             data.forEachIndexed{ index, it ->
-                //println("===> groupId=${it.groupId}, itemId=${it.itemId}, isSelected=${it.isSelected}")
+                println("===> groupId=${it.groupId}, itemId=${it.itemId}, isSelected=${it.isSelected}")
                 if (it.groupId == groupId && it.itemType == MenuModel.TYPE_DATA){
                     it.isSelected = when{
                         it.isSelected -> {//true
-                            startPosition = index
+                            position0 = index
                             false
                         }
                         it.itemId == itemId ->{
-                            endPosition = index
+                            position1 = index
                             true
                         }
                         else -> false
                     }
                 }
 
-                //println("---$startPosition, $endPosition")
+                println("---$position0, $position1")
                 //start & end 非初始值 -> 找出位置
-                if (startPosition != -1 && endPosition != -1){
+                if (position0 != -1 && position1 != -1){
                     Log.d(TAG, "found start-end pointer!")
-                    return startPosition..endPosition
+                    return min(position0,position1)..max(position0,position1)
                 }
             }
             Log.e(TAG, "updateIsSelected: Not Find the Selected Item")
