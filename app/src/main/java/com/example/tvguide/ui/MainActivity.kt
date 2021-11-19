@@ -1,13 +1,19 @@
 package com.example.tvguide.ui
 
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +30,34 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * @Func 負責做drawer 分布控制
+ *
+ * NOTE 由activity 代替 toolbar 做drawer 打開/關起來 的動作。可參考
+ *
+    ActionBarDrawerToggle(Activity activity, Toolbar toolbar, DrawerLayout drawerLayout,
+        DrawerArrowDrawable slider, @StringRes int openDrawerContentDescRes,
+        @StringRes int closeDrawerContentDescRes) {
+
+        if (toolbar != null) {
+            mActivityImpl = new ToolbarCompatDelegate(toolbar);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override  public void onClick(View v) {
+                    if (mDrawerIndicatorEnabled) {
+                        toggle();
+                    } else if (mToolbarNavigationClickListener != null) {
+                        mToolbarNavigationClickListener.onClick(v);
+                    }
+                }
+            });
+        } else if (activity instanceof DelegateProvider) { // Allow the Activity to provide an impl
+            mActivityImpl = ((DelegateProvider) activity).getDrawerToggleDelegate();
+        } else {
+            mActivityImpl = new FrameworkActionBarDelegate(activity);
+        }
+    ...
+ *
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModel : MainViewModel by viewModel()
@@ -56,7 +90,6 @@ class MainActivity : AppCompatActivity() {
         /////////////////////// 初始化drawer /////////////////////////////
 
         with(binding.drawer){
-
             for(item in viewModel.menuList){
                 if (item.isSelected) itemOn(item.title)
             }
@@ -103,6 +136,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun itemOn(name: String){
         //change effect, drawer pattern, content
         when(name){
@@ -119,9 +153,49 @@ class MainActivity : AppCompatActivity() {
             "Channel Search" -> {
 
             }
-            "Slide bar" -> {
+            "Slide Bar" -> {
+                with(binding.drawer){
+                    resetToDefault()
+                    //PATCH: 限制偵測滑出的方向
+                    setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)//鎖在闔起來的狀態
+                    drawerListenr = object : DrawerLayout.SimpleDrawerListener(){
+                        override fun onDrawerClosed(drawerView: View) {
+                            setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)//鎖在闔起來的狀態
+                        }
+                    }
+                    addDrawerListener(drawerListenr!!)
+                }
+
+                /**
+                 * iVslideBar面積太小了，不適合點擊，適合拖曳
+                 * 需限制能拖曳觸發的區域
+                 */
+                with(binding.iVslideBar){
+                    visibility = View.VISIBLE
+                    setOnTouchListener { v, event ->
+                        when(event.actionMasked){
+                            MotionEvent.ACTION_MOVE ->{
+                                //tag 作為Opening
+                                if (!(v.tag as Boolean)){
+                                    binding.drawer.setDrawerLockMode(LOCK_MODE_UNLOCKED)
+                                    binding.drawer.openDrawer(GravityCompat.START)
+                                    v.tag = true
+                                }
+                            }
+                            else -> { v.tag = false }
+                        }
+                        return@setOnTouchListener true
+                    }
+                }
+
             }
             "Gesture" -> {
+                /**
+                 * 不實作listener
+                 * 這樣就能打開/關閉 drawer
+                 *
+                 */
+                binding.drawer.resetToDefault()
             }
             "Overlap" -> {
                 /**
@@ -135,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                 with(binding.drawer){
                     resetToDefault()
                     setScrimColor(Color.TRANSPARENT)
-                    drawerListenr = object : DrawerLayout.DrawerListener {
+                    drawerListenr = object : DrawerLayout.SimpleDrawerListener() {
                         override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                             /**
                              * open drawer : slideOffset(0->1)
@@ -144,12 +218,6 @@ class MainActivity : AppCompatActivity() {
                             println("slideOffset: $slideOffset")
                             binding.container.translationX = binding.drawerSheet.navigationView.width * slideOffset
                         }
-
-                        override fun onDrawerOpened(drawerView: View) {}
-
-                        override fun onDrawerClosed(drawerView: View) {}
-
-                        override fun onDrawerStateChanged(newState: Int) {}
                     }
                     addDrawerListener(drawerListenr!!)
                 }
@@ -160,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                     resetToDefault()
                     setScrimColor(Color.TRANSPARENT)
                     var scaleFactor = 5f
-                    drawerListenr = object : DrawerLayout.DrawerListener {
+                    drawerListenr = object : DrawerLayout.SimpleDrawerListener() {
                         override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                             /**
                              * open drawer : slideOffset(0->1)
@@ -181,12 +249,6 @@ class MainActivity : AppCompatActivity() {
                             binding.container.scaleX = 1-(slideOffset/scaleFactor)
                             binding.container.scaleY = 1-(slideOffset/scaleFactor)
                         }
-
-                        override fun onDrawerOpened(drawerView: View) {}
-
-                        override fun onDrawerClosed(drawerView: View) {}
-
-                        override fun onDrawerStateChanged(newState: Int) {}
                     }
                     addDrawerListener(drawerListenr!!)
                 }
@@ -197,13 +259,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun DrawerLayout.resetToDefault(){
         if (drawerListenr != null) this.removeDrawerListener(drawerListenr!!)
+
+        //Shift Effect, Scale Effect:
         //當drawer右移，是否有陰影
         this.setScrimColor(0x99000000.toInt())//DrawerLayout.DEFAULT_SCRIM_COLOR = 0x99000000
+
         //Shift effect: 因為是點開drawer,content已位移,所以content 位移也要歸零
         binding.container.translationX = 0f
+
         //Scale effect:
         binding.container.scaleX = 1f
         binding.container.scaleY = 1f
+
+        //Slide Bar:
+        this.setDrawerLockMode(LOCK_MODE_UNLOCKED)
+        binding.iVslideBar.visibility = View.GONE
     }
 
 

@@ -23,8 +23,8 @@ class MainViewModel : ViewModel() {
             MenuModel(0, 1,false, "Channel Search", MenuModel.TYPE_DATA),
             //open drawer
             MenuModel(1, -1,false, "Open Drawer", MenuModel.TYPE_HEADER),
-            MenuModel(1, 0,true, "Slide Bar", MenuModel.TYPE_DATA),
-            MenuModel(1, 1,false, "Gesture", MenuModel.TYPE_DATA),
+            MenuModel(1, 0,true, "Gesture", MenuModel.TYPE_DATA),
+            MenuModel(1, 1,false, "Slide Bar", MenuModel.TYPE_DATA),
             //drawer effect
             MenuModel(2, -1,false, "Drawer Effect", MenuModel.TYPE_HEADER),
             MenuModel(2, 0,true, "Overlap", MenuModel.TYPE_DATA),
