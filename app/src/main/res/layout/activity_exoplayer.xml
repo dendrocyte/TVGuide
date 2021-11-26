@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--PATCH: exoplayer UI 的指導棋 https://exoplayer.dev/ui-components.html-->
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/root"
+    android:fitsSystemWindows="true"
+    android:background="#120101">
+
+<!-- PATCH: 平常習觀影片區塊旁皆為黑色，即要調整root的 android:background="@color/black"-->
 
     <!-- exoplayer UI: playerView, StyledPlayerView
        StyledPlayerView provide more ui decoration possibilities to dev-->
@@ -13,7 +19,7 @@
        bottom toolbar is handled by surfaceControl
      -->
 
-    <!-- You can use PlayerControlView/StyledPlayerControlView   -->
+    <!-- You can use PlayerControlView/StyledPlayerControlView instead of PlayerView/StyledPlayerView  -->
 
     <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/player"
@@ -21,4 +27,10 @@
         android:layout_height="match_parent"
         app:show_buffering="when_playing"
         app:show_shuffle_button="true"/>
+
+    <!-- Patch: StyledPlayerView
+      進度條的背景色 app:shutter_background_color="@color/black"
+      選擇渲染層 surface_type: none(for Radio), surface, texture....
+    -->
+
 </FrameLayout>
