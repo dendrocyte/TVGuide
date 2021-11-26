@@ -3,6 +3,8 @@ package com.example.tvguide.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tvguide.databinding.ActivityExoplayerBinding
+import com.example.tvguide.model.Analyst
+import com.example.tvguide.model.PlayItem
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 
@@ -41,9 +43,11 @@ class ExoPlayerActivity : AppCompatActivity() {
         binding = ActivityExoplayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val playItem = intent.getParcelableExtra<PlayItem>(ARG_PLAY)
+        val bot = intent.getParcelableExtra<Analyst>(ARG_BOT)
 
-        //FIXME: pass video to vm
-        val videoUri = "https://multiplatform-f.akamaihd.net/i/multi/will/bunny/big_buck_bunny_,640x360_400,640x360_700,640x360_1000,950x540_1500,.f4v.csmil/master.m3u8"
+        checkNotNull(playItem)
+        val videoUri = playItem.currentUrl
         val mediaItem = MediaItem.fromUri(videoUri)
 
 
