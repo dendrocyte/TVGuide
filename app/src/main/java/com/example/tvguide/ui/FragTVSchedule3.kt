@@ -1,5 +1,7 @@
 package com.example.tvguide.ui
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,7 @@ import com.example.tvguide.adapter.TimelineAdapter
 import com.example.tvguide.custom.Schedule
 import com.example.tvguide.custom.Timeline
 import com.example.tvguide.databinding.FragLiveScheduleMyDesign1Binding
+import com.example.tvguide.intentFor
 import com.example.tvguide.logd
 import com.example.tvguide.model.Status
 import com.example.tvguide.model.TVScheduleModel
@@ -80,6 +83,9 @@ class FragTVSchedule3 : Fragment(){
         }}
     private val programTableAdapter : ProgramTableAdapter by lazy {
         ProgramTableAdapter(hashMapOf()).apply {
+
+            this.passiveHScrollSubject = this@FragTVSchedule3.passiveHScrollSubject
+
             setOnItemChildClickListener { adapter, v, position ->
                 //TODO: navi channel
             }
@@ -244,7 +250,11 @@ class FragTVSchedule3 : Fragment(){
             adapter = programTableAdapter
 
             adapter@ with(programTableAdapter){
-                this.passiveHScrollSubject = this@FragTVSchedule3.passiveHScrollSubject
+                this.naviPgListener = { playItem, analyst ->
+                    startActivity(intentFor<ExoPlayerActivity>(
+                        ARG_PLAY to playItem, ARG_BOT to analyst
+                    ))
+                }
                 setDiffNewData(data.entries.toMutableList())
 
             }
@@ -294,7 +304,7 @@ class FragTVSchedule3 : Fragment(){
             adapter = programTableAdapter
 
             adapter@ with(programTableAdapter){
-                this.passiveHScrollSubject = this@FragTVSchedule3.passiveHScrollSubject
+                this.naviPgListener = null
                 this.setEmptyView(errView)
                 setDiffNewData(mutableListOf())
             }

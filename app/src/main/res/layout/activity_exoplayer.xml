@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- exoplayer UI: playerView, StyledPlayerView
+       StyledPlayerView provide more ui decoration possibilities to dev-->
+
+    <!-- PlayerView/StyledPlayerView contains bottom toolbar
+       bottom toolbar is handled by surfaceControl
+     -->
+
+    <!-- You can use PlayerControlView/StyledPlayerControlView   -->
+
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:show_buffering="when_playing"
+        app:show_shuffle_button="true"/>
+</FrameLayout>

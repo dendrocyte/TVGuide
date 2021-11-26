@@ -8,6 +8,7 @@ buildscript {
     ext.rxbridge_version='3.0.0'
     ext.arch_version = "2.1.0"
     ext.mockk_version = "1.9.3"
+    ext.exoplayer_version = "2.16.1"
 
     repositories {
         google()

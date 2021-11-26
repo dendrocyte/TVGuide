@@ -71,7 +71,7 @@ class ProgramAdapter(data : List<TVScheduleModel>)
 
     /*複寫，以做到不同view type 做有無註冊listener的區分*/
     override fun setOnItemChildClick(v: View, position: Int) {
-        if (data[position].program != null && v.id == R.id.iVthumbnail)
+        if (data[position].program != null && v.id == R.id.iVmask)
             super.setOnItemChildClick(v, position)
     }
 }

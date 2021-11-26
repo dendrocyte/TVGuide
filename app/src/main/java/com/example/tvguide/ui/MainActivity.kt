@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                  */
                 FragTVSchedule3().navi(supportFragmentManager, R.id.container, false)
             }
-            "Channel Search" -> {
+            "Channel Search" -> { //FIXME
 
             }
             "Slide Bar" -> {
