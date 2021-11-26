@@ -1,9 +1,11 @@
 package com.example.tvguide
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -139,3 +141,25 @@ fun Context.alert(
 fun Any.logd(msg: String) = Log.d(this::class.java.simpleName, msg)
 fun Any.loge(msg: String, e:Throwable? = null) = Log.e(this::class.java.simpleName, "msg: $msg", e)
 fun Any.logw(msg : String) = Log.w(this::class.java.simpleName, msg)
+
+
+
+
+////////////////////// 全螢幕 ////////////////////////////////////
+
+fun Activity.changeWindowStatusBar(color: Int = Color.parseColor("#c45a5a")){
+    /**
+     * @version > Android 11 (R)
+     * windowInsetsController instead
+     * @version < Android 11 (R)
+     * systemUiVisibility
+     *
+     * statusBarColor 無法顯示刷透明度的顏色，即使colorString有含透明度的值，也無法
+     */
+    window.statusBarColor = color
+}
+
+
+
+/////////////////////// 初始化drawer /////////////////////////////
+

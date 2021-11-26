@@ -21,6 +21,7 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.example.tvguide.R
+import com.example.tvguide.changeWindowStatusBar
 import com.example.tvguide.databinding.ActivityMainBinding
 import com.example.tvguide.logd
 import com.example.tvguide.model.MenuModel
@@ -76,15 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         ////////////////////// 全螢幕 ////////////////////////////////////
 
-        /**
-         * @version > Android 11 (R)
-         * windowInsetsController instead
-         * @version < Android 11 (R)
-         * systemUiVisibility
-         *
-         * statusBarColor 無法顯示刷透明度的顏色，即使colorString有含透明度的值，也無法
-         */
-        window.statusBarColor = Color.parseColor("#c45a5a")
+        changeWindowStatusBar()
 
 
         /////////////////////// 初始化drawer /////////////////////////////

@@ -2,6 +2,7 @@ package com.example.tvguide.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.tvguide.changeWindowStatusBar
 import com.example.tvguide.databinding.ActivityExoplayerBinding
 import com.example.tvguide.model.Analyst
 import com.example.tvguide.model.PlayItem
@@ -27,7 +28,31 @@ import com.google.android.exoplayer2.MediaItem
  *
  * NOTE  Exoplayer guideline(https://exoplayer.dev/media-items.html)
  *
- *
+ * @code exo_styled_player_view.xml (官方) 的佈局
+ * 以相同的xml名字和id 做佈局的改寫
+   ++++++++++++++++++++++++++++++
+   +                            +
+   + +++++++++++++++++++++++++  + AspectRatioFrameLayout (id=contentFrame) 私有，可調控滿版/16:4/...
+   + +                       +  +
+   + +  ++++++++++++++++++   +  +
+   + +  ++++++++++++++++++   +  + Dynamically add surfaceView here (position = 0) into AspectRatioFrameLayout
+   + +  ++++++++++++++++++   +  +
+   + +                       +  +
+   + +  ++++++++++++++++++   +  + shutter for snapshot or record the video
+   + +  ++++++++++++++++++   +  +
+   + +  ++++++++++++++++++   +  +
+   + +                       +  +
+   + +++++++++++++++++++++++++  +
+   +                            +
+   + +++++++++++++++++++++++++  +
+   + +++++++++++++++++++++++++  +  Ad overlay
+   + +++++++++++++++++++++++++  +
+   +                            +
+   + +++++++++++++++++++++++++  +
+   + +++++++++++++++++++++++++  +  Bottom Player Toolbar
+   + +++++++++++++++++++++++++  +
+   +                            +
+   ++++++++++++++++++++++++++++++
  * @params
  * @params
  */
@@ -42,6 +67,9 @@ class ExoPlayerActivity : AppCompatActivity() {
 
         binding = ActivityExoplayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 全螢幕 //
+        changeWindowStatusBar()
 
         val playItem = intent.getParcelableExtra<PlayItem>(ARG_PLAY)
         val bot = intent.getParcelableExtra<Analyst>(ARG_BOT)
